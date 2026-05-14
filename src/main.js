@@ -204,3 +204,135 @@ window.addEventListener('resize', () => {
 // Init sliders after DOM load
 updateAttrSlider()
 updateHotelsSlider()
+
+// ===== BOOKING / JOURNEY SECTION =====
+import { initBookingScene, DEST_PRICES } from './booking.js'
+
+const QUICK_DESTS = ['Colombo', 'Galle', 'Kandy', 'Sigiriya', 'Ella', 'Mirissa', 'Arugam Bay', 'Jaffna']
+const ALL_DESTS = Object.keys(DEST_PRICES)
+
+let bookingScene = null
+let selectedDest = ''
+let selectedVehicle = ''
+let journeyDays = 1
+
+// Populate destination dropdown
+const journeyDestEl = document.getElementById('journeyDest')
+ALL_DESTS.forEach(d => {
+  const opt = document.createElement('option')
+  opt.value = d
+  opt.textContent = d
+  journeyDestEl?.appendChild(opt)
+})
+
+// Populate quick chips
+const quickChipsEl = document.getElementById('quickChips')
+QUICK_DESTS.forEach(d => {
+  const btn = document.createElement('button')
+  btn.className = 'quick-chip'
+  btn.textContent = d
+  btn.addEventListener('click', () => {
+    selectJourneyDest(d)
+    if (journeyDestEl) journeyDestEl.value = d
+    quickChipsEl?.querySelectorAll('.quick-chip').forEach(c => c.classList.remove('active'))
+    btn.classList.add('active')
+  })
+  quickChipsEl?.appendChild(btn)
+})
+
+// Destination change
+journeyDestEl?.addEventListener('change', e => {
+  selectJourneyDest(e.target.value)
+  quickChipsEl?.querySelectorAll('.quick-chip').forEach(c => {
+    c.classList.toggle('active', c.textContent === e.target.value)
+  })
+})
+
+function selectJourneyDest(dest) {
+  selectedDest = dest
+  bookingScene?.selectDestination(dest)
+  updateJourneyPrice()
+}
+
+// Vehicle cards
+document.querySelectorAll('.v-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.v-card').forEach(c => c.classList.remove('active'))
+    card.classList.add('active')
+    selectedVehicle = card.dataset.type
+    bookingScene?.selectVehicle(selectedVehicle)
+    updateJourneyPrice()
+  })
+})
+
+// Days control
+const jDaysValEl = document.getElementById('jDaysVal')
+document.getElementById('jDaysDown')?.addEventListener('click', () => {
+  if (journeyDays > 1) { journeyDays--; if (jDaysValEl) jDaysValEl.textContent = journeyDays; updateJourneyPrice() }
+})
+document.getElementById('jDaysUp')?.addEventListener('click', () => {
+  if (journeyDays < 30) { journeyDays++; if (jDaysValEl) jDaysValEl.textContent = journeyDays; updateJourneyPrice() }
+})
+
+// Price animation counter
+function animateCount(el, from, to, prefix = '$') {
+  const duration = 600
+  const start = performance.now()
+  function tick(now) {
+    const p = Math.min((now - start) / duration, 1)
+    const val = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)))
+    el.textContent = prefix + val
+    if (p < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+function updateJourneyPrice() {
+  const rateEl = document.getElementById('jPcRate')
+  const daysEl = document.getElementById('jPcDays')
+  const taxEl = document.getElementById('jPcTax')
+  const totalEl = document.getElementById('jPcTotal')
+  const card = document.getElementById('journeyPriceCard')
+
+  if (!selectedDest || !selectedVehicle) {
+    if (rateEl) rateEl.textContent = '—'
+    if (daysEl) daysEl.textContent = '—'
+    if (taxEl) taxEl.textContent = '—'
+    if (totalEl) totalEl.textContent = '$0'
+    return
+  }
+
+  const rate = DEST_PRICES[selectedDest]?.[selectedVehicle] ?? 0
+  const sub = rate * journeyDays
+  const tax = Math.round(sub * 0.1)
+  const total = sub + tax
+
+  if (rateEl) rateEl.textContent = '$' + rate + '/day'
+  if (daysEl) daysEl.textContent = journeyDays + ' day(s)'
+  if (taxEl) taxEl.textContent = '$' + tax
+
+  // Get current total value to animate from
+  const currentTotal = parseInt(totalEl?.textContent?.replace('$', '') || '0')
+  if (totalEl) animateCount(totalEl, currentTotal, total)
+
+  // Flash animation
+  card?.classList.remove('price-animate')
+  void card?.offsetWidth
+  card?.classList.add('price-animate')
+}
+
+// Enquire button
+document.getElementById('jEnquireBtn')?.addEventListener('click', () => {
+  if (!selectedDest || !selectedVehicle) {
+    alert('Please select a destination and vehicle first.')
+    return
+  }
+  const rate = DEST_PRICES[selectedDest]?.[selectedVehicle] ?? 0
+  const total = Math.round(rate * journeyDays * 1.1)
+  alert(`Enquiry submitted!\n\nDestination: ${selectedDest}\nVehicle: ${selectedVehicle === 'car' ? 'Sedan Car' : 'Minivan'}\nDuration: ${journeyDays} day(s)\nTotal: $${total}\n\nWe will contact you shortly!`)
+})
+
+// Init Three.js scene (after DOM is ready, with slight delay for layout)
+setTimeout(() => {
+  bookingScene = initBookingScene('journeyCanvas')
+}, 100)

@@ -115,6 +115,74 @@
   </div>
 </section>
 
+<!-- BOOK JOURNEY SECTION -->
+<section id="book-journey" class="journey-section">
+  <div class="journey-layout">
+    <!-- Three.js canvas (left) -->
+    <div class="journey-3d" id="journeyCanvas"></div>
+    <!-- Form panel (right) -->
+    <div class="journey-form-panel">
+      <p class="top-label">Plan Your Adventure</p>
+      <h2 class="journey-title">Book Your<br>Sri Lanka Journey</h2>
+      <p class="journey-desc">Select your destination and vehicle — get an instant price estimate</p>
+
+      <!-- Step 1: Destination -->
+      <div class="jf-group">
+        <div class="jf-label"><span class="jf-num">01</span> Choose Destination</div>
+        <div class="quick-chips" id="quickChips"></div>
+        <select class="jf-select" id="journeyDest">
+          <option value="">— Select a Destination —</option>
+        </select>
+      </div>
+
+      <!-- Step 2: Vehicle -->
+      <div class="jf-group">
+        <div class="jf-label"><span class="jf-num">02</span> Select Vehicle</div>
+        <div class="v-cards" id="vCards">
+          <button class="v-card" data-type="car">
+            <span class="v-emoji">🚗</span>
+            <div class="v-details">
+              <strong>Sedan Car</strong>
+              <em>1–3 passengers · A/C</em>
+            </div>
+            <span class="v-tag">Economy</span>
+          </button>
+          <button class="v-card" data-type="van">
+            <span class="v-emoji">🚐</span>
+            <div class="v-details">
+              <strong>Minivan</strong>
+              <em>4–9 passengers · A/C</em>
+            </div>
+            <span class="v-tag">Comfort</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Days -->
+      <div class="jf-group">
+        <div class="jf-label"><span class="jf-num">03</span> Duration</div>
+        <div class="days-ctrl">
+          <button class="days-btn" id="jDaysDown">&#8722;</button>
+          <div class="days-disp">
+            <big id="jDaysVal">1</big>
+            <small>day(s)</small>
+          </div>
+          <button class="days-btn" id="jDaysUp">&#43;</button>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-card" id="journeyPriceCard">
+        <div class="price-line"><span>Rate per day</span><span id="jPcRate">—</span></div>
+        <div class="price-line"><span>Duration</span><span id="jPcDays">—</span></div>
+        <div class="price-line price-line--tax"><span>Tax &amp; fees (10%)</span><span id="jPcTax">—</span></div>
+        <div class="price-line price-line--total"><span>Total</span><span id="jPcTotal">$0</span></div>
+        <button class="btn-gold w-full" style="margin-top:20px;" id="jEnquireBtn">Enquire Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- WELCOME SECTION -->
 <section class="welcome-section" id="welcome">
   <div class="container-75">
