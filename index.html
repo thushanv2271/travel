@@ -1,13 +1,744 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>travel</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel to Sri Lanka | Truly Sri Lanka | Travel Guides, Tips and Weather</title>
+  <meta name="description" content="Travel to Sri Lanka and experience the wonders of the Pearl of the Indian Ocean, boasting wondrous historic sites and warm hospitality for the perfect vacation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+<!-- BOOKING WIDGET -->
+<div class="booking-overlay" id="bookingOverlay"></div>
+<div class="booking-widget" id="bookingWidget">
+  <button class="booking-close" id="bookingClose">&times;</button>
+  <p class="widget-title">Plan Your Stay</p>
+  <form class="widget-form" onsubmit="handleBooking(event)">
+    <div class="form-group">
+      <label>Select Destination</label>
+      <select id="destSelect">
+        <option value="">Select Destination</option>
+        <option>Colombo</option><option>Galle</option><option>Kandy</option>
+        <option>Sigiriya</option><option>Ella</option><option>Nuwara Eliya</option>
+        <option>Mirissa</option><option>Hikkaduwa</option><option>Unawatuna</option>
+        <option>Bentota</option><option>Arugam Bay</option><option>Jaffna</option>
+        <option>Trincomalee</option><option>Yala</option><option>Pasikuda</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Select Hotel</label>
+      <select id="hotelSelect">
+        <option value="">Select Hotel</option>
+        <option>Jetwing Lake</option><option>Jetwing Yala</option>
+        <option>Ramada by Wyndham Colombo</option><option>Kithala Resort</option>
+        <option>Jetwing Lagoon Wellness</option>
+      </select>
+    </div>
+    <button type="submit" class="btn-gold w-full">BOOK NOW</button>
+  </form>
+</div>
+
+<!-- HEADER -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="#" class="logo">Truly <span>Sri Lanka</span></a>
+    <nav class="main-nav">
+      <a href="#">Home</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#hotels">Hotels</a>
+      <a href="#attractions">Attractions</a>
+      <a href="#experiences">Experiences</a>
+      <a href="#faq">Travel Tips</a>
+      <a href="#">Blog</a>
+    </nav>
+    <div class="header-right">
+      <button class="btn-gold book-trigger" id="bookTrigger">BOOK NOW</button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <a href="#" class="logo">Truly <span>Sri Lanka</span></a>
+    <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="#">Home</a>
+    <a href="#destinations">Destinations</a>
+    <a href="#hotels">Hotels</a>
+    <a href="#attractions">Attractions</a>
+    <a href="#experiences">Experiences</a>
+    <a href="#faq">Travel Tips</a>
+    <a href="#">Blog</a>
+    <a href="#">Contact Us</a>
+  </nav>
+  <button class="btn-gold book-trigger w-full mt-20">BOOK NOW</button>
+</div>
+<div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+<!-- HERO BANNER SLIDER -->
+<section class="hero-banner">
+  <div class="banner-slider" id="bannerSlider">
+    <div class="banner-slide active">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-1.jpg" alt="Sri Lanka">
+    </div>
+    <div class="banner-slide">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-2.jpg" alt="Sri Lanka">
+    </div>
+    <div class="banner-slide">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-3.jpg" alt="Sri Lanka">
+    </div>
+    <div class="banner-slide">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-4.jpg" alt="Sri Lanka">
+    </div>
+    <div class="banner-slide">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-5.jpg" alt="Sri Lanka">
+    </div>
+    <div class="banner-slide">
+      <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-6.jpg" alt="Sri Lanka">
+    </div>
+  </div>
+  <div class="banner-dots" id="bannerDots"></div>
+  <div class="scroll-hint">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="44" viewBox="0 0 35 50" fill="none">
+      <path d="M17.5 50C22.1 50 26.6 48.2 29.9 44.9C33.2 41.6 35 37.1 35 32.5V17.5C35 7.8 27.2 0 17.5 0C7.8 0 0 7.8 0 17.5V32.5C0 42.2 7.8 50 17.5 50ZM2.5 17.5C2.5 9.2 9.2 2.5 17.5 2.5C25.8 2.5 32.5 9.2 32.5 17.5V32.5C32.5 40.8 25.8 47.5 17.5 47.5C9.2 47.5 2.5 40.8 2.5 32.5V17.5Z" fill="white" opacity="0.6"/>
+      <path d="M16.25 33.125L9.1 25.9L10.9 24.1L16.25 29.5V16.25H18.75V29.5L24.1 24.1L25.9 25.9L18.75 33.125H16.25Z" fill="white" opacity="0.6"/>
+    </svg>
+  </div>
+</section>
+
+<!-- WELCOME SECTION -->
+<section class="welcome-section" id="welcome">
+  <div class="container-75">
+    <div class="welcome-grid">
+      <div class="welcome-text">
+        <p class="top-label">So Sri Lanka, Truly</p>
+        <h1 class="section-title">Discover an Island of Endless Wonders</h1>
+        <div class="body-text">
+          <p>Discover Sri Lanka, an island of contrasts where emerald hills meet turquoise seas, and ancient temples stand beside bustling markets. Every corner reveals a new adventure — from wildlife safaris and tea plantations to pristine beaches and vibrant festivals.</p>
+          <br>
+          <p>Sri Lanka is more than a destination — it's an invitation to explore, to taste, to feel. From serene escapes to vibrant adventures, every moment draws you closer to the island's heart and its timeless charm.</p>
+        </div>
+      </div>
+      <div class="welcome-image">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-welcome.jpg" alt="Welcome to Sri Lanka">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY SRI LANKA -->
+<section class="why-section" id="why">
+  <div class="container-75">
+    <p class="top-label text-center">Why Sri Lanka</p>
+    <h2 class="section-title text-center">What Makes Sri Lanka Special</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <h3>Sri Lanka: Time Out's No:1 Place to Travel</h3>
+        <p>Time Out has recognized Sri Lanka as the top destination in October 2025</p>
+      </div>
+      <div class="why-item">
+        <h3>The Most Beautiful Island in the World</h3>
+        <p>By Big 7 Travel in their prestigious list of The 50 Best Islands in the World 2025.</p>
+      </div>
+      <div class="why-item">
+        <h3>World's Most Desirable Island</h3>
+        <p>Wanderlust Reader Travel Awards (2024): Voted the "World's Most Desirable Island".</p>
+      </div>
+      <div class="why-item">
+        <h3>Condé Nast Traveler's 2025 Readers' Choice Awards</h3>
+        <p>Sri Lanka Ranks 7th in Condé Nast Traveler's 2025 Readers' Choice Awards: A Culinary Triumph</p>
+      </div>
+      <div class="why-item">
+        <h3>25 Under-the-Radar Luxurious Holidays 2025</h3>
+        <p>Sri Lanka has been listed in World Travel Magazine's 25 Under-the-Radar Ideas for Luxurious Holidays in 2025.</p>
+      </div>
+      <div class="why-item">
+        <h3>Best Destination for Solo Female Travellers</h3>
+        <p>In 2024, the island was named "Best Destination for Solo Female Travellers" by Time Out Group</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATTRACTIONS -->
+<section class="attractions-section section-yellow" id="attractions">
+  <div class="container-75">
+    <div class="section-header-split">
+      <div>
+        <p class="top-label">Wonders Await Here</p>
+        <h2 class="section-title">Explore Sri Lanka's Top Attractions</h2>
+      </div>
+      <div class="section-header-right">
+        <p class="body-text">From ancient temples and UNESCO sites to pristine beaches and lush national parks, Sri Lanka offers diverse attractions. Every corner invites exploration, adventure, and cultural discovery, making each visit a truly unforgettable experience.</p>
+        <a href="#" class="btn-gold">Explore All</a>
+      </div>
+    </div>
+  </div>
+  <div class="attractions-slider-wrap">
+    <div class="attractions-slider" id="attractionsSlider">
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/sights-and-landmarks-feat.jpg" alt="Sights & Landmarks">
+        <div class="attraction-overlay">
+          <h3>Sights &amp; Landmarks</h3>
+          <p>The iconic sights and landmarks in Sri Lanka emphasise its profound culture and historic heritage.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/beach-opti.jpg" alt="Beaches">
+        <div class="attraction-overlay">
+          <h3>Beaches</h3>
+          <p>The country is endowed with over a thousand miles of beautiful golden beaches fringed with coconut palms.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/flora-fauna-list-feat.jpg" alt="Flora & Fauna">
+        <div class="attraction-overlay">
+          <h3>Flora &amp; Fauna</h3>
+          <p>Being a nation that dazzles with an extensive range of wildlife, Sri Lanka is a paradise for nature lovers.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/nature-with-deer.jpg" alt="Nature & Parks">
+        <div class="attraction-overlay">
+          <h3>Nature &amp; Parks</h3>
+          <p>Sri Lanka is home to an impressive array of over 25 nature and adventure parks, some World Heritage Sites.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/lakes-feat.jpg" alt="Lakes & Rivers">
+        <div class="attraction-overlay">
+          <h3>Lakes &amp; Rivers</h3>
+          <p>Check out the beautiful lakes and rivers in Sri Lanka — the most popular choices for sightseeing.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2020/05/4093-feature.jpg" alt="Religious & Cultural Sites">
+        <div class="attraction-overlay">
+          <h3>Religious &amp; Cultural Sites</h3>
+          <p>Seven religious and cultural sites of Sri Lanka have been recognised by UNESCO as World Heritage Sites.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/markets-feat.jpg" alt="Markets">
+        <div class="attraction-overlay">
+          <h3>Markets</h3>
+          <p>Visiting the local markets in Sri Lanka is certainly an enticing way to explore the Sri Lankan culture.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/waterfalls-feat.jpg" alt="Waterfalls">
+        <div class="attraction-overlay">
+          <h3>Waterfalls</h3>
+          <p>Sri Lanka's lush landscapes are home to some of the most spectacular waterfalls in South Asia.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+      <div class="attraction-card">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/museums-list-feat.jpg" alt="Museums">
+        <div class="attraction-overlay">
+          <h3>Museums</h3>
+          <p>Walk down the sands of time and learn about the history, heritage, culture and evolution of Sri Lanka.</p>
+          <span class="more-details-btn">MORE DETAILS</span>
+        </div>
+      </div>
+    </div>
+    <button class="slider-btn slider-prev" id="attrPrev">&#8249;</button>
+    <button class="slider-btn slider-next" id="attrNext">&#8250;</button>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations-section" id="destinations">
+  <div class="container-90">
+    <div class="destinations-grid">
+      <div class="destinations-map">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Group-1652.png" alt="Sri Lanka Map" onerror="this.style.opacity='0.3'">
+        <ul class="dest-list" id="destList">
+          <li class="active" data-index="0">Colombo</li>
+          <li data-index="1">Galle</li>
+          <li data-index="2">Anuradhapura</li>
+          <li data-index="3">Hikkaduwa</li>
+          <li data-index="4">Kandy</li>
+          <li data-index="5">Sigiriya</li>
+          <li data-index="6">Arugam Bay</li>
+          <li data-index="7">Bentota</li>
+          <li data-index="8">Jaffna</li>
+          <li data-index="9">Mirissa</li>
+          <li data-index="10">Pasikuda</li>
+          <li data-index="11">Polonnaruwa</li>
+          <li data-index="12">Tangalle</li>
+          <li data-index="13">Trincomalee</li>
+          <li data-index="14">Ella</li>
+          <li data-index="15">Nuwara Eliya</li>
+          <li data-index="16">Negombo</li>
+          <li data-index="17">Yala</li>
+        </ul>
+      </div>
+      <div class="destinations-content">
+        <p class="top-label">Top Destinations in Sri Lanka</p>
+        <h2 class="section-title">Discover the wonders of the Paradise Island</h2>
+        <div class="dest-slider-wrap">
+          <div class="dest-slider" id="destSlider">
+            <div class="dest-slide active">
+              <div class="dest-info">
+                <h3>Colombo</h3>
+                <p class="dest-sub">The lively metropolis of Sri Lanka</p>
+                <p class="dest-desc">The grand city of Colombo is the Commercial Capital of Sri Lanka. Among the high-rise buildings are malls, restaurants and various forms of urban entertainment that awaits the urban explorer.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/colombo.jpg" alt="Colombo"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Galle</h3>
+                <p class="dest-sub">Where the colonial era lives on</p>
+                <p class="dest-desc">Remarkable sunsets and monuments that tell the tales of history in the southern region of Sri Lanka are what the elegant city of Galle is all about. Find out more enticing appeals await you here!</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/galle-hm-feat.jpg" alt="Galle"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Anuradhapura</h3>
+                <p class="dest-sub">Where the land is soaked in history</p>
+                <p class="dest-desc">As part of the cultural triangle, Anuradhapura is home to a collection of historic attractions that are centuries old where the essence of Buddhism is a prominent part of life.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/anuradhapura-hm-feat.jpg" alt="Anuradhapura"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Hikkaduwa</h3>
+                <p class="dest-sub">The beach lover's sanctuary</p>
+                <p class="dest-desc">Located on the coastal line of the island, Hikkaduwa is a destination that offers sun and beach for the beach lovers. Not to mention the clear waters and coral reefs waiting to be explored.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/hikka-hm-feat.jpg" alt="Hikkaduwa"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Kandy</h3>
+                <p class="dest-sub">Explore the last monarch of Ceylon</p>
+                <p class="dest-desc">Being the last kingdom of Sri Lanka, Kandy is treated as a prestigious place to visit. The cultural capital of the island offers iconic attractions and the beauty of nature to indulge in.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/kandy.jpg" alt="Kandy"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Sigiriya</h3>
+                <p class="dest-sub">Where wonder fills the air</p>
+                <p class="dest-desc">Famed the world over for the colossal rock that once served as the residence of a King, the very air of Sigiriya is seasoned with a sense of wonder that is sure to mesmerise its visitors.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/sigiriya.jpg" alt="Sigiriya"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Arugam Bay</h3>
+                <p class="dest-sub">Sri Lanka's surf capital</p>
+                <p class="dest-desc">Known locally as "Arugam Kudah", Arugam Bay is one of the most famed and popular seaside retreats found in Sri Lanka with world-class surf breaks.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/arugambay.jpg" alt="Arugam Bay"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Bentota</h3>
+                <p class="dest-sub">A charming coastal retreat</p>
+                <p class="dest-desc">Located about 60 kilometres away from Colombo, Bentota is a quaint little coastal town that's full of charm and character.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/bentota-hm-feat.jpg" alt="Bentota"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Jaffna</h3>
+                <p class="dest-sub">Rich in Tamil culture and heritage</p>
+                <p class="dest-desc">Embellished in traditional Hindu flair, Tamil art, and stern yet untainted culture, Jaffna offers a portal for its guests to see an unimposing and fascinating side of Sri Lanka.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/jaffna-hm-feat.jpg" alt="Jaffna"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Mirissa</h3>
+                <p class="dest-sub">The whale watching capital</p>
+                <p class="dest-desc">Found on the southern coast of Sri Lanka, Mirissa is a seemingly small town found by the coast that is famous for whale watching and beautiful beaches.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/mirissa-hm-feat.jpg" alt="Mirissa"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Pasikuda</h3>
+                <p class="dest-sub">Azure waters and blissful shores</p>
+                <p class="dest-desc">With shallow and azure waters that extend up to a kilometre towards the ocean, Pasikuda is one of the most blissful beach destinations on the island.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/pasikudah-hm-feat.jpg" alt="Pasikuda"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Polonnaruwa</h3>
+                <p class="dest-sub">A World Heritage archaeological city</p>
+                <p class="dest-desc">Being renowned as a World Heritage Site, Polonnaruwa is a city that is riddled with numerous ruins and monuments that speak of a glorious past.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/polonnaruwa.jpg" alt="Polonnaruwa"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Tangalle</h3>
+                <p class="dest-sub">A charming southern seaside retreat</p>
+                <p class="dest-desc">Located around 200 kilometres away from Colombo, Tangalle is a charming seaside retreat found along the island's southern coast with pristine beaches and a laid-back vibe.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/colombo.jpg" alt="Tangalle"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Trincomalee</h3>
+                <p class="dest-sub">The natural harbour of the east</p>
+                <p class="dest-desc">Trincomalee boasts one of the finest natural harbours in the world alongside stunning beaches, historic temples, and warm tropical waters perfect for diving.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/pasikudah-hm-feat.jpg" alt="Trincomalee"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Ella</h3>
+                <p class="dest-sub">Cool hills and scenic train rides</p>
+                <p class="dest-desc">Ella is a small town perched in the hills of southern Sri Lanka, known for its green landscape, mist-covered peaks, and the iconic Nine Arch Bridge.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/anuradhapura-hm-feat.jpg" alt="Ella"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Nuwara Eliya</h3>
+                <p class="dest-sub">Little England in the hills</p>
+                <p class="dest-desc">Dubbed "Little England", Nuwara Eliya is a hill station surrounded by vast tea plantations. Cool climate, beautiful gardens and scenic waterfalls define this destination.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/kandy.jpg" alt="Nuwara Eliya"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Negombo</h3>
+                <p class="dest-sub">The gateway to Sri Lanka</p>
+                <p class="dest-desc">Located just north of the airport, Negombo is a vibrant coastal city known for its fishing industry, Dutch heritage, and beautiful lagoon beaches.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/bentota-hm-feat.jpg" alt="Negombo"></div>
+            </div>
+            <div class="dest-slide">
+              <div class="dest-info">
+                <h3>Yala</h3>
+                <p class="dest-sub">Sri Lanka's premier wildlife park</p>
+                <p class="dest-desc">Yala National Park is home to the world's highest density of leopards, along with elephants, crocodiles, and hundreds of bird species in a stunning wilderness setting.</p>
+                <a href="#" class="btn-gold">More Details</a>
+              </div>
+              <div class="dest-image"><img src="https://djpadb6zmchmi.cloudfront.net/2025/10/arugambay.jpg" alt="Yala"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dest-nav">
+          <button class="slider-btn" id="destPrev">&#8249;</button>
+          <button class="slider-btn" id="destNext">&#8250;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCES -->
+<section class="experiences-section section-yellow" id="experiences">
+  <div class="container-75">
+    <div class="section-header-split">
+      <div>
+        <p class="top-label">Explore, Experience, Enjoy</p>
+        <h2 class="section-title">Top Experiences</h2>
+      </div>
+      <div class="section-header-right">
+        <p class="body-text">A world of attractions presents itself to guests who choose to visit Sri Lanka. Whether it's taking it easy at the beach or a trek through the country's breath-taking landscapes, things to do in Sri Lanka are of abundance.</p>
+        <a href="#" class="btn-gold">Explore All</a>
+      </div>
+    </div>
+  </div>
+  <div class="container-90 mt-50">
+    <div class="experiences-grid">
+      <div class="exp-left">
+        <a href="#" class="exp-block exp-tall">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/opti-sports.jpg" alt="Adventure & Sports">
+          <span>Adventure &amp; Sports</span>
+        </a>
+        <a href="#" class="exp-block exp-short">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/waterfalls-feat.jpg" alt="Waterfalls">
+          <span>Waterfalls</span>
+        </a>
+      </div>
+      <a href="#" class="exp-block exp-center">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2020/05/4103-feature.jpg" alt="Sun & Beach">
+        <span>Sun &amp; Beach</span>
+      </a>
+      <div class="exp-right">
+        <a href="#" class="exp-block exp-short">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/09/culture.png" alt="Heritage & Culture">
+          <span>Heritage &amp; Culture</span>
+        </a>
+        <a href="#" class="exp-block exp-tall">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/09/tours.png" alt="Sightseeing & Tours">
+          <span>Sightseeing &amp; Tours</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOTELS -->
+<section class="hotels-section" id="hotels">
+  <div class="container-90">
+    <div class="section-header-center">
+      <p class="top-label text-center">Rest, Unwind, And Explore</p>
+      <h2 class="section-title text-center">Hotels For Every Traveller</h2>
+    </div>
+    <div class="hotels-slider-wrap">
+      <div class="hotels-slider" id="hotelsSlider">
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Jetwing-Yala-9.jpeg" alt="Jetwing Yala">
+          <div class="hotel-overlay">
+            <p class="hotel-location">&#x25cf; Yala</p>
+            <h3>Jetwing Yala</h3>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Jetwing-Lake-9.jpeg" alt="Jetwing Lake">
+          <div class="hotel-overlay">
+            <p class="hotel-location">&#x25cf; Sigiriya</p>
+            <h3>Jetwing Lake</h3>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/ramada-feat.jpg" alt="Ramada Colombo">
+          <div class="hotel-overlay">
+            <p class="hotel-location">&#x25cf; Colombo</p>
+            <h3>Ramada by Wyndham Colombo</h3>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Jetwing-Lagoon-Wellness-1.jpeg" alt="Jetwing Lagoon">
+          <div class="hotel-overlay">
+            <p class="hotel-location">&#x25cf; Negombo</p>
+            <h3>Jetwing Lagoon Wellness</h3>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Kithala-Resort-Rectangle-571-Large.jpeg" alt="Kithala Resort">
+          <div class="hotel-overlay">
+            <h3>Kithala Resort</h3>
+          </div>
+        </div>
+        <div class="hotel-card">
+          <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/Jetwing-Surf-Safari-9.jpeg" alt="Jetwing Surf & Safari">
+          <div class="hotel-overlay">
+            <h3>Jetwing Surf &amp; Safari</h3>
+          </div>
+        </div>
+      </div>
+      <button class="slider-btn hotels-prev" id="hotelsPrev">&#8249;</button>
+      <button class="slider-btn hotels-next" id="hotelsNext">&#8250;</button>
+    </div>
+    <div class="text-center mt-40">
+      <a href="#" class="btn-gold">Explore All Hotels</a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO / PARALLAX BANNER -->
+<section class="video-section">
+  <div class="video-bg">
+    <img src="https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-5.jpg" alt="Sri Lanka">
+  </div>
+  <div class="video-overlay">
+    <div class="video-content">
+      <div class="video-headline">
+        <h2>A Hidden Gem</h2>
+        <h2>of the Tropics</h2>
+      </div>
+      <p>Explore stunning beaches, lush hills, rich culture, and vibrant wildlife. Sri Lanka offers unforgettable adventures for every traveller.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="container-75">
+    <div class="faq-grid">
+      <div class="faq-content">
+        <p class="top-label">FAQ's</p>
+        <h2 class="section-title">Find Your Answers</h2>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-btn active" data-target="faq1">
+              Is now a good time to travel to Sri Lanka?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body open" id="faq1">
+              <p>Yes, absolutely! Sri Lanka offers unique experiences year-round, from pristine beaches to cultural landmarks and wildlife adventures. It's the perfect time to explore the island's natural beauty, rich heritage, and scenic landscapes.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq2">
+              Which beaches are ideal for relaxation?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq2">
+              <p>Sri Lanka has plenty of stunning beaches. Hikkaduwa and Mirissa are perfect for relaxing, while Bentota and Unawatuna offer calm waters, golden sands, and peaceful coastal strolls.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq3">
+              What is the best time of year to visit?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq3">
+              <p>Sri Lanka is a year-round destination. The best time is December–April for south and west coasts, and May–September for north and east regions.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq4">
+              Do I need a visa or ETA to enter Sri Lanka?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq4">
+              <p>Yes, travelers require an ETA for Sri Lanka, except Maldivians and Singaporeans. Apply online at <strong>www.eta.gov.lk</strong>; it's valid 30 days and extendable up to six months.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq5">
+              What's the best way to travel within Sri Lanka?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq5">
+              <p>There are many ways to travel in Sri Lanka — use PickMe or Uber, taxi services, scenic trains, long-distance buses, and convenient domestic air taxis.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq6">
+              What is the local currency?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq6">
+              <p>Sri Lanka's currency is the Sri Lankan Rupee (LKR). Carry some cash for small purchases, though credit and debit cards are widely accepted island-wide.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq7">
+              What are the best beaches in Sri Lanka?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq7">
+              <p>Sri Lanka's best beaches include Mirissa, Unawatuna, Hiriketiya, Bentota, Arugam Bay, Nilaveli, and Pasikuda — ideal for surfing, swimming, snorkeling, or relaxing, depending on season.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-btn" data-target="faq8">
+              What plug type and voltage are used?<span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="faq8">
+              <p>Sri Lanka uses 230V, 50Hz electricity. The main plug types are Type D (three round pins) and Type G (UK-style three rectangular pins). An adapter is recommended.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="faq-image">
+        <img src="https://djpadb6zmchmi.cloudfront.net/2025/09/faqimg.png" alt="FAQ Sri Lanka">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="container-90">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo logo-white">Truly <span>Sri Lanka</span></a>
+          <p>Discover the Pearl of the Indian Ocean. Explore, experience, and be inspired by the beauty of Sri Lanka.</p>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/VisitTrulySriLanka/" target="_blank" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="20" viewBox="0 0 11 20" fill="none">
+                <path d="M6.76 19.36V10.75H9.65L10.08 7.39H6.76V5.25C6.76 4.28 7.03 3.62 8.42 3.62L10.2 3.62V0.61C9.89 0.57 8.84 0.48 7.61 0.48C5.05 0.48 3.3 2.05 3.3 4.92V7.39H0.4V10.75H3.3V19.36H6.76Z" fill="white"/>
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/trulysrilanka/" target="_blank" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M17.41 5.4C17.36 4.49 17.22 3.87 17.01 3.33C16.79 2.76 16.46 2.24 16.02 1.81C15.6 1.38 15.08 1.04 14.51 0.83C13.97 0.62 13.35 0.47 12.44 0.43C11.53 0.39 11.24 0.38 8.92 0.38C6.6 0.38 6.31 0.39 5.4 0.43C4.49 0.47 3.87 0.62 3.33 0.83C2.76 1.04 2.24 1.38 1.81 1.81C1.38 2.24 1.04 2.76 0.83 3.33C0.62 3.87 0.47 4.49 0.43 5.4C0.39 6.31 0.38 6.6 0.38 8.92C0.38 11.24 0.39 11.53 0.43 12.44C0.47 13.35 0.62 13.97 0.83 14.51C1.04 15.08 1.38 15.6 1.81 16.02C2.24 16.46 2.76 16.79 3.33 17.01C3.87 17.22 4.49 17.36 5.4 17.4C6.31 17.45 6.6 17.46 8.92 17.46C11.24 17.46 11.53 17.45 12.44 17.4C13.35 17.36 13.97 17.22 14.51 17.01C15.66 16.56 16.56 15.66 17.01 14.51C17.22 13.97 17.36 13.35 17.41 12.44C17.45 11.53 17.46 11.24 17.46 8.92C17.46 6.6 17.45 6.31 17.41 5.4ZM8.92 11.77C7.35 11.77 6.07 10.49 6.07 8.92C6.07 7.35 7.35 6.07 8.92 6.07C10.49 6.07 11.77 7.35 11.77 8.92C11.77 10.49 10.49 11.77 8.92 11.77ZM14.5 4.36C14.5 4.93 14.04 5.39 13.48 5.39C12.91 5.39 12.45 4.93 12.45 4.36C12.45 3.8 12.91 3.34 13.48 3.34C14.04 3.34 14.5 3.8 14.5 4.36Z" fill="white"/>
+              </svg>
+            </a>
+            <a href="https://www.youtube.com/@trulysrilanka" target="_blank" aria-label="YouTube">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14" viewBox="0 0 21 14" fill="none">
+                <path d="M20.57 2.19C20.33 1.33 19.62 0.66 18.72 0.43C17.07 0 10.5 0 10.5 0C10.5 0 3.93 0 2.28 0.41C1.4 0.64 0.67 1.33 0.43 2.19C0 3.76 0 7 0 7C0 7 0 10.26 0.43 11.81C0.67 12.67 1.38 13.34 2.28 13.57C3.94 14 10.5 14 10.5 14C10.5 14 17.07 14 18.72 13.59C19.62 13.36 20.33 12.68 20.57 11.83C21 10.26 21 7.02 21 7.02C21 7.02 21.02 3.76 20.57 2.19ZM8.41 10V4L13.87 7L8.41 10Z" fill="white"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Destinations</h4>
+          <ul>
+            <li><a href="#">Colombo</a></li>
+            <li><a href="#">Galle</a></li>
+            <li><a href="#">Kandy</a></li>
+            <li><a href="#">Sigiriya</a></li>
+            <li><a href="#">Ella</a></li>
+            <li><a href="#">Mirissa</a></li>
+            <li><a href="#">Jaffna</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Experiences</h4>
+          <ul>
+            <li><a href="#">Adventure &amp; Sports</a></li>
+            <li><a href="#">Sun &amp; Beach</a></li>
+            <li><a href="#">Wildlife &amp; Safari</a></li>
+            <li><a href="#">Heritage &amp; Culture</a></li>
+            <li><a href="#">Sightseeing</a></li>
+            <li><a href="#">Shopping</a></li>
+            <li><a href="#">Nightlife</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Hotels</a></li>
+            <li><a href="#">Attractions</a></li>
+            <li><a href="#">Travel Tips</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container-90">
+      <p>&copy; 2026 Truly Sri Lanka. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/src/main.js"></script>
+</body>
 </html>
