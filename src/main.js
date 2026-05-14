@@ -1,338 +1,187 @@
-import './style.css'
+// ===== NAVBAR TOGGLE =====
+const overlay    = document.querySelector('[data-overlay]')
+const navOpenBtn = document.querySelector('[data-nav-open-btn]')
+const navbar     = document.querySelector('[data-navbar]')
+const navCloseBtn= document.querySelector('[data-nav-close-btn]')
+const navLinks   = document.querySelectorAll('[data-nav-link]')
 
-// ===== HEADER SCROLL =====
-const header = document.getElementById('siteHeader')
+function toggleNav() {
+  navbar?.classList.toggle('active')
+  overlay?.classList.toggle('active')
+}
+navOpenBtn?.addEventListener('click', toggleNav)
+navCloseBtn?.addEventListener('click', toggleNav)
+overlay?.addEventListener('click', toggleNav)
+navLinks.forEach(l => l.addEventListener('click', toggleNav))
+
+// ===== HEADER STICKY + GO-TOP =====
+const header   = document.querySelector('[data-header]')
+const goTopBtn = document.querySelector('[data-go-top]')
+
 window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 60)
+  const scrolled = window.scrollY >= 200
+  header?.classList.toggle('active', scrolled)
+  goTopBtn?.classList.toggle('active', scrolled)
 })
 
-// ===== MOBILE MENU =====
-const hamburger = document.getElementById('hamburger')
-const mobileMenu = document.getElementById('mobileMenu')
-const mobileMenuClose = document.getElementById('mobileMenuClose')
-const mobileMenuOverlay = document.getElementById('mobileMenuOverlay')
+// ===== TOUR SEARCH FORM =====
+const VEHICLE_RATES = { car: 45, van: 65, tuk: 25, bike: 20 }
+const VEHICLE_LABELS = {
+  car:  '<ion-icon name="car-outline"></ion-icon> Car',
+  van:  '<ion-icon name="bus-outline"></ion-icon> Van',
+  tuk:  '<ion-icon name="flash-outline"></ion-icon> Tuk-Tuk',
+  bike: '<ion-icon name="bicycle-outline"></ion-icon> Bike'
+}
 
-function openMobileMenu() {
-  mobileMenu.classList.add('open')
-  mobileMenuOverlay.classList.add('active')
+const PACKAGES = [
+  {
+    title: 'Cultural Triangle Discovery Tour',
+    duration: '7D / 6N', price: 899,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/anuradhapura-hm-feat.jpg',
+    tags: ['Colombo','Kandy','Sigiriya','Anuradhapura','Polonnaruwa','Negombo']
+  },
+  {
+    title: 'Beach & Wildlife Safari Adventure',
+    duration: '8D / 7N', price: 1199,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/hikka-hm-feat.jpg',
+    tags: ['Galle','Hikkaduwa','Mirissa','Tangalle','Yala','Bentota']
+  },
+  {
+    title: 'Hill Country & Tea Estates Escape',
+    duration: '5D / 4N', price: 749,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-2.jpg',
+    tags: ['Kandy','Ella','Nuwara Eliya']
+  },
+  {
+    title: 'East Coast Surf & Sun Escape',
+    duration: '7D / 6N', price: 990,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/arugambay.jpg',
+    tags: ['Arugam Bay','Pasikuda','Trincomalee']
+  },
+  {
+    title: 'Jaffna Cultural Immersion',
+    duration: '4D / 3N', price: 620,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/jaffna-hm-feat.jpg',
+    tags: ['Jaffna']
+  },
+  {
+    title: 'Luxury Yala Safari Lodge Experience',
+    duration: '4D / 3N', price: 1850,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-4.jpg',
+    tags: ['Yala']
+  },
+  {
+    title: 'Grand Sri Lanka Circuit',
+    duration: '14D / 13N', price: 2450,
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-3.jpg',
+    tags: [] // fallback — matches any destination
+  }
+]
+
+function getRecommended(destination) {
+  const matched = PACKAGES.filter(p => p.tags.includes(destination))
+  if (matched.length >= 2) return matched.slice(0, 3)
+  const grand = PACKAGES.find(p => p.tags.length === 0)
+  return [...matched, grand].filter(Boolean).slice(0, 3)
+}
+
+function daysBetween(a, b) {
+  return Math.max(1, Math.ceil((new Date(b) - new Date(a)) / 86400000))
+}
+
+function fmtDate(s) {
+  return new Date(s).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function buildModalHTML({ destination, people, checkin, checkout, vehicle }) {
+  const days    = daysBetween(checkin, checkout)
+  const rate    = VEHICLE_RATES[vehicle]
+  const total   = Math.round(rate * days * 1.1)
+  const pkgs    = getRecommended(destination)
+
+  const chips = [
+    `<ion-icon name="location-outline"></ion-icon> ${destination}`,
+    `<ion-icon name="people-outline"></ion-icon> ${people} ${people == 1 ? 'person' : 'people'}`,
+    `<ion-icon name="calendar-outline"></ion-icon> ${fmtDate(checkin)} → ${fmtDate(checkout)}`,
+    VEHICLE_LABELS[vehicle],
+    `<ion-icon name="moon-outline"></ion-icon> ${days} ${days === 1 ? 'night' : 'nights'}`
+  ].map(t => `<span class="summary-chip">${t}</span>`).join('')
+
+  const pkgCards = pkgs.map(p => `
+    <a href="packages.html" class="modal-pkg-card">
+      <div class="modal-pkg-img"><img src="${p.img}" alt="${p.title}" loading="lazy"></div>
+      <div class="modal-pkg-info">
+        <h4>${p.title}</h4>
+        <p>${p.duration} &nbsp;·&nbsp; from $${p.price}/person</p>
+      </div>
+      <span class="modal-pkg-price">$${p.price}</span>
+    </a>`).join('')
+
+  return `
+    <div class="search-summary">${chips}</div>
+
+    <div class="price-estimate-card">
+      <div>
+        <p class="price-est-label">Estimated Transport Cost</p>
+        <p class="price-est-note">${VEHICLE_LABELS[vehicle]} &nbsp;·&nbsp; $${rate}/day &nbsp;·&nbsp; ${days} day${days > 1 ? 's' : ''} + 10% tax</p>
+      </div>
+      <div style="text-align:right">
+        <p class="price-est-value">$${total}</p>
+        <p class="price-est-note">excl. accommodation</p>
+      </div>
+    </div>
+
+    <p class="modal-section-title">Recommended Packages for ${destination}</p>
+    <div class="modal-pkg-list">${pkgCards}</div>
+
+    <div class="modal-actions">
+      <a href="packages.html" class="btn btn-primary">View All Packages</a>
+      <a href="#contact"      class="btn btn-outline">Enquire Now</a>
+    </div>`
+}
+
+// Modal open/close
+const searchModalOverlay = document.getElementById('searchModalOverlay')
+const searchModalClose   = document.getElementById('searchModalClose')
+const searchModalBody    = document.getElementById('searchModalBody')
+const modalSubtitle      = document.getElementById('modalSubtitle')
+
+function openModal(html, subtitle) {
+  modalSubtitle.textContent = subtitle
+  searchModalBody.innerHTML = html
+  searchModalOverlay.classList.add('active')
   document.body.style.overflow = 'hidden'
 }
-function closeMobileMenu() {
-  mobileMenu.classList.remove('open')
-  mobileMenuOverlay.classList.remove('active')
+
+function closeModal() {
+  searchModalOverlay?.classList.remove('active')
   document.body.style.overflow = ''
 }
 
-hamburger?.addEventListener('click', openMobileMenu)
-mobileMenuClose?.addEventListener('click', closeMobileMenu)
-mobileMenuOverlay?.addEventListener('click', closeMobileMenu)
+searchModalClose?.addEventListener('click', closeModal)
+searchModalOverlay?.addEventListener('click', e => { if (e.target === searchModalOverlay) closeModal() })
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() })
 
-// Close mobile menu on nav link click
-document.querySelectorAll('.mobile-nav a').forEach(a => {
-  a.addEventListener('click', closeMobileMenu)
-})
-
-// ===== BOOKING WIDGET =====
-const bookingWidget = document.getElementById('bookingWidget')
-const bookingOverlay = document.getElementById('bookingOverlay')
-const bookingClose = document.getElementById('bookingClose')
-
-function openBooking() {
-  bookingWidget.classList.add('open')
-  bookingOverlay.classList.add('active')
-  document.body.style.overflow = 'hidden'
-}
-function closeBooking() {
-  bookingWidget.classList.remove('open')
-  bookingOverlay.classList.remove('active')
-  document.body.style.overflow = ''
-}
-
-document.querySelectorAll('.book-trigger').forEach(btn => {
-  btn.addEventListener('click', openBooking)
-})
-bookingClose?.addEventListener('click', closeBooking)
-bookingOverlay?.addEventListener('click', closeBooking)
-
-window.handleBooking = function(e) {
+// Form submit
+const tourSearchForm = document.getElementById('tourSearchForm')
+tourSearchForm?.addEventListener('submit', e => {
   e.preventDefault()
-  alert('Booking request received! We will contact you shortly.')
-  closeBooking()
-}
 
-// ===== BANNER SLIDER =====
-const bannerSlides = document.querySelectorAll('.banner-slide')
-const bannerDotsContainer = document.getElementById('bannerDots')
-let bannerIndex = 0
-let bannerTimer
+  const destination = tourSearchForm.destination.value
+  const people      = tourSearchForm.people.value
+  const checkin     = tourSearchForm.checkin.value
+  const checkout    = tourSearchForm.checkout.value
+  const vehicleEl   = tourSearchForm.querySelector('input[name="vehicle"]:checked')
 
-// Create dots
-bannerSlides.forEach((_, i) => {
-  const dot = document.createElement('button')
-  dot.className = 'banner-dot' + (i === 0 ? ' active' : '')
-  dot.setAttribute('aria-label', `Slide ${i + 1}`)
-  dot.addEventListener('click', () => goBanner(i))
-  bannerDotsContainer?.appendChild(dot)
-})
-
-function goBanner(idx) {
-  bannerSlides[bannerIndex].classList.remove('active')
-  document.querySelectorAll('.banner-dot')[bannerIndex]?.classList.remove('active')
-  bannerIndex = (idx + bannerSlides.length) % bannerSlides.length
-  bannerSlides[bannerIndex].classList.add('active')
-  document.querySelectorAll('.banner-dot')[bannerIndex]?.classList.add('active')
-}
-
-function nextBanner() { goBanner(bannerIndex + 1) }
-
-function startBannerAuto() { bannerTimer = setInterval(nextBanner, 4000) }
-function stopBannerAuto() { clearInterval(bannerTimer) }
-
-startBannerAuto()
-document.querySelector('.hero-banner')?.addEventListener('mouseenter', stopBannerAuto)
-document.querySelector('.hero-banner')?.addEventListener('mouseleave', startBannerAuto)
-
-// ===== ATTRACTIONS SLIDER =====
-const attractionsSlider = document.getElementById('attractionsSlider')
-const attrCards = attractionsSlider?.querySelectorAll('.attraction-card')
-const attrPrev = document.getElementById('attrPrev')
-const attrNext = document.getElementById('attrNext')
-let attrIndex = 0
-const attrVisible = () => window.innerWidth <= 600 ? 1 : window.innerWidth <= 900 ? 2 : 3
-
-function updateAttrSlider() {
-  if (!attractionsSlider) return
-  const cardWidth = attractionsSlider.parentElement.offsetWidth / attrVisible()
-  attractionsSlider.style.transform = `translateX(-${attrIndex * cardWidth}px)`
-}
-
-attrNext?.addEventListener('click', () => {
-  if (!attrCards) return
-  const max = attrCards.length - attrVisible()
-  if (attrIndex < max) { attrIndex++; updateAttrSlider() }
-})
-attrPrev?.addEventListener('click', () => {
-  if (attrIndex > 0) { attrIndex--; updateAttrSlider() }
-})
-
-// Touch/drag for attractions
-let attrDragStart = 0
-attractionsSlider?.addEventListener('mousedown', e => { attrDragStart = e.clientX })
-attractionsSlider?.addEventListener('mouseup', e => {
-  const diff = attrDragStart - e.clientX
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) attrNext?.click()
-    else attrPrev?.click()
+  if (!destination || !people || !checkin || !checkout || !vehicleEl) {
+    alert('Please fill in all fields and select a vehicle.')
+    return
   }
-})
-
-// ===== DESTINATIONS SLIDER =====
-const destSlides = document.querySelectorAll('.dest-slide')
-const destListItems = document.querySelectorAll('#destList li')
-const destPrev = document.getElementById('destPrev')
-const destNext = document.getElementById('destNext')
-let destIndex = 0
-
-function goDest(idx) {
-  destSlides[destIndex].classList.remove('active')
-  destListItems[destIndex]?.classList.remove('active')
-  destIndex = (idx + destSlides.length) % destSlides.length
-  destSlides[destIndex].classList.add('active')
-  destListItems[destIndex]?.classList.add('active')
-  // Scroll list item into view
-  destListItems[destIndex]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-}
-
-destPrev?.addEventListener('click', () => goDest(destIndex - 1))
-destNext?.addEventListener('click', () => goDest(destIndex + 1))
-
-destListItems.forEach(item => {
-  item.addEventListener('click', () => goDest(Number(item.dataset.index)))
-})
-
-// ===== HOTELS SLIDER =====
-const hotelsSlider = document.getElementById('hotelsSlider')
-const hotelCards = hotelsSlider?.querySelectorAll('.hotel-card')
-const hotelsPrev = document.getElementById('hotelsPrev')
-const hotelsNext = document.getElementById('hotelsNext')
-let hotelIndex = 0
-const hotelsVisible = () => window.innerWidth <= 600 ? 1 : window.innerWidth <= 900 ? 2 : 4
-
-function updateHotelsSlider() {
-  if (!hotelsSlider || !hotelCards) return
-  const gap = 16
-  const cardWidth = (hotelsSlider.parentElement.offsetWidth - gap * (hotelsVisible() - 1)) / hotelsVisible()
-  hotelsSlider.style.transform = `translateX(-${hotelIndex * (cardWidth + gap)}px)`
-}
-
-hotelsNext?.addEventListener('click', () => {
-  if (!hotelCards) return
-  const max = hotelCards.length - hotelsVisible()
-  if (hotelIndex < max) { hotelIndex++; updateHotelsSlider() }
-})
-hotelsPrev?.addEventListener('click', () => {
-  if (hotelIndex > 0) { hotelIndex--; updateHotelsSlider() }
-})
-
-// ===== FAQ ACCORDION =====
-document.querySelectorAll('.accordion-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const targetId = btn.dataset.target
-    const body = document.getElementById(targetId)
-    const isOpen = body?.classList.contains('open')
-
-    // Close all
-    document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'))
-    document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('active'))
-
-    // Open clicked (toggle)
-    if (!isOpen) {
-      body?.classList.add('open')
-      btn.classList.add('active')
-    }
-  })
-})
-
-// ===== RESIZE HANDLER =====
-window.addEventListener('resize', () => {
-  attrIndex = 0
-  hotelIndex = 0
-  updateAttrSlider()
-  updateHotelsSlider()
-})
-
-// Init sliders after DOM load
-updateAttrSlider()
-updateHotelsSlider()
-
-// ===== BOOKING / JOURNEY SECTION =====
-import { initBookingScene, DEST_PRICES } from './booking.js'
-
-const QUICK_DESTS = ['Colombo', 'Galle', 'Kandy', 'Sigiriya', 'Ella', 'Mirissa', 'Arugam Bay', 'Jaffna']
-const ALL_DESTS = Object.keys(DEST_PRICES)
-
-let bookingScene = null
-let selectedDest = ''
-let selectedVehicle = ''
-let journeyDays = 1
-
-// Populate destination dropdown
-const journeyDestEl = document.getElementById('journeyDest')
-ALL_DESTS.forEach(d => {
-  const opt = document.createElement('option')
-  opt.value = d
-  opt.textContent = d
-  journeyDestEl?.appendChild(opt)
-})
-
-// Populate quick chips
-const quickChipsEl = document.getElementById('quickChips')
-QUICK_DESTS.forEach(d => {
-  const btn = document.createElement('button')
-  btn.className = 'quick-chip'
-  btn.textContent = d
-  btn.addEventListener('click', () => {
-    selectJourneyDest(d)
-    if (journeyDestEl) journeyDestEl.value = d
-    quickChipsEl?.querySelectorAll('.quick-chip').forEach(c => c.classList.remove('active'))
-    btn.classList.add('active')
-  })
-  quickChipsEl?.appendChild(btn)
-})
-
-// Destination change
-journeyDestEl?.addEventListener('change', e => {
-  selectJourneyDest(e.target.value)
-  quickChipsEl?.querySelectorAll('.quick-chip').forEach(c => {
-    c.classList.toggle('active', c.textContent === e.target.value)
-  })
-})
-
-function selectJourneyDest(dest) {
-  selectedDest = dest
-  bookingScene?.selectDestination(dest)
-  updateJourneyPrice()
-}
-
-// Vehicle cards
-document.querySelectorAll('.v-card').forEach(card => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('.v-card').forEach(c => c.classList.remove('active'))
-    card.classList.add('active')
-    selectedVehicle = card.dataset.type
-    bookingScene?.selectVehicle(selectedVehicle)
-    updateJourneyPrice()
-  })
-})
-
-// Days control
-const jDaysValEl = document.getElementById('jDaysVal')
-document.getElementById('jDaysDown')?.addEventListener('click', () => {
-  if (journeyDays > 1) { journeyDays--; if (jDaysValEl) jDaysValEl.textContent = journeyDays; updateJourneyPrice() }
-})
-document.getElementById('jDaysUp')?.addEventListener('click', () => {
-  if (journeyDays < 30) { journeyDays++; if (jDaysValEl) jDaysValEl.textContent = journeyDays; updateJourneyPrice() }
-})
-
-// Price animation counter
-function animateCount(el, from, to, prefix = '$') {
-  const duration = 600
-  const start = performance.now()
-  function tick(now) {
-    const p = Math.min((now - start) / duration, 1)
-    const val = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)))
-    el.textContent = prefix + val
-    if (p < 1) requestAnimationFrame(tick)
-  }
-  requestAnimationFrame(tick)
-}
-
-function updateJourneyPrice() {
-  const rateEl = document.getElementById('jPcRate')
-  const daysEl = document.getElementById('jPcDays')
-  const taxEl = document.getElementById('jPcTax')
-  const totalEl = document.getElementById('jPcTotal')
-  const card = document.getElementById('journeyPriceCard')
-
-  if (!selectedDest || !selectedVehicle) {
-    if (rateEl) rateEl.textContent = '—'
-    if (daysEl) daysEl.textContent = '—'
-    if (taxEl) taxEl.textContent = '—'
-    if (totalEl) totalEl.textContent = '$0'
+  if (new Date(checkout) <= new Date(checkin)) {
+    alert('Check-out date must be after check-in date.')
     return
   }
 
-  const rate = DEST_PRICES[selectedDest]?.[selectedVehicle] ?? 0
-  const sub = rate * journeyDays
-  const tax = Math.round(sub * 0.1)
-  const total = sub + tax
-
-  if (rateEl) rateEl.textContent = '$' + rate + '/day'
-  if (daysEl) daysEl.textContent = journeyDays + ' day(s)'
-  if (taxEl) taxEl.textContent = '$' + tax
-
-  // Get current total value to animate from
-  const currentTotal = parseInt(totalEl?.textContent?.replace('$', '') || '0')
-  if (totalEl) animateCount(totalEl, currentTotal, total)
-
-  // Flash animation
-  card?.classList.remove('price-animate')
-  void card?.offsetWidth
-  card?.classList.add('price-animate')
-}
-
-// Enquire button
-document.getElementById('jEnquireBtn')?.addEventListener('click', () => {
-  if (!selectedDest || !selectedVehicle) {
-    alert('Please select a destination and vehicle first.')
-    return
-  }
-  const rate = DEST_PRICES[selectedDest]?.[selectedVehicle] ?? 0
-  const total = Math.round(rate * journeyDays * 1.1)
-  alert(`Enquiry submitted!\n\nDestination: ${selectedDest}\nVehicle: ${selectedVehicle === 'car' ? 'Sedan Car' : 'Minivan'}\nDuration: ${journeyDays} day(s)\nTotal: $${total}\n\nWe will contact you shortly!`)
+  const html = buildModalHTML({ destination, people, checkin, checkout, vehicle: vehicleEl.value })
+  openModal(html, `Results for ${destination} · ${people} guest${people == 1 ? '' : 's'}`)
 })
-
-// Init Three.js scene (after DOM is ready, with slight delay for layout)
-setTimeout(() => {
-  bookingScene = initBookingScene('journeyCanvas')
-}, 100)
