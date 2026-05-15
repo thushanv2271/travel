@@ -1,11 +1,9 @@
-// ===== BOOKING PAGE =====
-
 // ===== NAVBAR TOGGLE =====
-const overlay    = document.querySelector('[data-overlay]')
-const navOpenBtn = document.querySelector('[data-nav-open-btn]')
-const navbar     = document.querySelector('[data-navbar]')
-const navCloseBtn= document.querySelector('[data-nav-close-btn]')
-const navLinks   = document.querySelectorAll('[data-nav-link]')
+const overlay     = document.querySelector('[data-overlay]')
+const navOpenBtn  = document.querySelector('[data-nav-open-btn]')
+const navbar      = document.querySelector('[data-navbar]')
+const navCloseBtn = document.querySelector('[data-nav-close-btn]')
+const navLinks    = document.querySelectorAll('[data-nav-link]')
 
 function toggleNav() {
   navbar?.classList.toggle('active')
@@ -19,7 +17,6 @@ navLinks.forEach(l => l.addEventListener('click', toggleNav))
 // ===== HEADER STICKY + GO-TOP =====
 const header   = document.querySelector('[data-header]')
 const goTopBtn = document.querySelector('[data-go-top]')
-
 window.addEventListener('scroll', () => {
   const scrolled = window.scrollY >= 200
   header?.classList.toggle('active', scrolled)
@@ -27,9 +24,9 @@ window.addEventListener('scroll', () => {
 })
 
 // ===== DATA =====
-const VEHICLE_RATES = { car: 45, van: 65, tuk: 25, bike: 20 }
+const VEHICLE_RATES  = { car: 45, van: 65, tuk: 25, bike: 20 }
 const VEHICLE_LABELS = { car: 'Car', van: 'Van', tuk: 'Tuk-Tuk', bike: 'Bike' }
-const VEHICLE_ICONS  = { car: 'car-outline', van: 'bus-outline', tuk: 'flash-outline', bike: 'bicycle-outline' }
+const VEHICLE_ICONS  = { car: 'car-sport-outline', van: 'bus-outline', tuk: 'flash-outline', bike: 'bicycle-outline' }
 
 const PACKAGES = [
   {
@@ -50,7 +47,7 @@ const PACKAGES = [
     title: 'Hill Country & Tea Estates Escape',
     duration: '5D / 4N', price: 749, maxPeople: 8, region: 'Central Hills',
     img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-2.jpg',
-    desc: 'Misty mountains, emerald tea plantations, and the world\'s most scenic train ride from Kandy through Nuwara Eliya to Ella.',
+    desc: "Misty mountains, emerald tea plantations, and the world's most scenic train ride from Kandy through Nuwara Eliya to Ella.",
     tags: ['Kandy','Ella','Nuwara Eliya']
   },
   {
@@ -63,8 +60,8 @@ const PACKAGES = [
   {
     title: 'Jaffna Cultural Immersion',
     duration: '4D / 3N', price: 620, maxPeople: 8, region: 'Northern Province',
-    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/jaffna-hm-feat.jpg',
-    desc: 'Discover the unique Tamil heritage, ancient Hindu temples, and warm hospitality of Sri Lanka\'s vibrant north.',
+    img: 'https://djpadb6zmchmi.cloudfront.net/2025/10/truly-srilanka-banner-1.jpg',
+    desc: "Discover the unique Tamil heritage, ancient Hindu temples, and warm hospitality of Sri Lanka's vibrant north.",
     tags: ['Jaffna']
   },
   {
@@ -83,6 +80,7 @@ const PACKAGES = [
   }
 ]
 
+// ===== HELPERS =====
 function getRecommended(destination) {
   const matched = PACKAGES.filter(p => p.tags.includes(destination))
   if (matched.length >= 2) return matched.slice(0, 3)
@@ -98,22 +96,185 @@ function fmtDate(s) {
   return new Date(s).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-function starHTML() {
+function stars() {
   return Array(5).fill('<ion-icon name="star"></ion-icon>').join('')
 }
 
-function buildResultsHTML({ destination, people, checkin, checkout, vehicle }) {
+// ===== STEP MACHINE =====
+let currentStep = 1
+const panels    = document.querySelectorAll('.bk-step-panel')
+const stepDots  = document.querySelectorAll('.bk-step')
+const stepLines = document.querySelectorAll('.bk-step-line')
+
+function goToStep(n) {
+  panels.forEach((p, i) => p.classList.toggle('active', i + 1 === n))
+  stepDots.forEach((s, i) => {
+    s.classList.toggle('active', i + 1 === n)
+    s.classList.toggle('done',   i + 1 < n)
+  })
+  stepLines.forEach((l, i) => l.classList.toggle('done', i + 1 < n))
+  currentStep = n
+}
+
+document.getElementById('step1Next')?.addEventListener('click', () => {
+  const pickup = document.getElementById('bk-pickup').value
+  const dest   = document.getElementById('bk-dest').value
+  if (!pickup) { flashInvalid('bk-pickup', 'Please select a pickup location.'); return }
+  if (!dest)   { flashInvalid('bk-dest',   'Please select a destination.');     return }
+  if (pickup === dest) { alert('Pickup and destination cannot be the same.'); return }
+  goToStep(2)
+})
+
+document.getElementById('step2Back')?.addEventListener('click', () => goToStep(1))
+document.getElementById('step2Next')?.addEventListener('click', () => {
+  const checkin  = document.getElementById('bk-checkin').value
+  const checkout = document.getElementById('bk-checkout').value
+  if (!checkin)  { flashInvalid('bk-checkin',  'Please choose a check-in date.');  return }
+  if (!checkout) { flashInvalid('bk-checkout', 'Please choose a check-out date.'); return }
+  if (new Date(checkout) <= new Date(checkin)) {
+    alert('Check-out must be after check-in.')
+    return
+  }
+  goToStep(3)
+})
+
+document.getElementById('step3Back')?.addEventListener('click', () => goToStep(2))
+
+function flashInvalid(id, msg) {
+  const el = document.getElementById(id)
+  if (!el) return
+  el.style.borderColor = 'hsl(0,70%,55%)'
+  el.style.boxShadow  = '0 0 0 3px hsla(0,70%,55%,.15)'
+  alert(msg)
+  setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = '' }, 2000)
+  el.focus()
+}
+
+// ===== SWAP BUTTON =====
+document.getElementById('swapBtn')?.addEventListener('click', () => {
+  const pickupEl = document.getElementById('bk-pickup')
+  const destEl   = document.getElementById('bk-dest')
+  const tmp = pickupEl.value
+  pickupEl.value = destEl.value
+  destEl.value   = tmp
+  updateRoutePreview()
+})
+
+// ===== ROUTE PREVIEW =====
+function updateRoutePreview() {
+  const pickup = document.getElementById('bk-pickup').value
+  const dest   = document.getElementById('bk-dest').value
+  const preview = document.getElementById('routePreview')
+  if (pickup && dest && pickup !== dest) {
+    document.getElementById('routeFrom').textContent = pickup
+    document.getElementById('routeTo').textContent   = dest
+    preview.style.display = 'flex'
+  } else {
+    preview.style.display = 'none'
+  }
+}
+document.getElementById('bk-pickup')?.addEventListener('change', updateRoutePreview)
+document.getElementById('bk-dest')?.addEventListener('change', updateRoutePreview)
+
+// ===== NIGHTS BADGE =====
+function updateNights() {
+  const checkin  = document.getElementById('bk-checkin').value
+  const checkout = document.getElementById('bk-checkout').value
+  const badge    = document.getElementById('nightsBadge')
+  const count    = document.getElementById('nightsCount')
+  if (checkin && checkout && new Date(checkout) > new Date(checkin)) {
+    count.textContent  = daysBetween(checkin, checkout)
+    badge.style.display = 'flex'
+  } else {
+    badge.style.display = 'none'
+  }
+}
+document.getElementById('bk-checkin')?.addEventListener('change', updateNights)
+document.getElementById('bk-checkout')?.addEventListener('change', updateNights)
+
+// Set min date for checkin to today
+const today = new Date().toISOString().split('T')[0]
+const checkinEl  = document.getElementById('bk-checkin')
+const checkoutEl = document.getElementById('bk-checkout')
+if (checkinEl)  checkinEl.min  = today
+if (checkoutEl) checkoutEl.min = today
+checkinEl?.addEventListener('change', () => {
+  if (checkoutEl) checkoutEl.min = checkinEl.value
+})
+
+// ===== GUEST COUNTER =====
+let guests = 2
+const guestCountEl = document.getElementById('guestCount')
+const guestInput   = document.getElementById('bk-people')
+
+function setGuests(n) {
+  guests = Math.min(20, Math.max(1, n))
+  if (guestCountEl) guestCountEl.textContent = guests
+  if (guestInput)   guestInput.value = guests
+  updateLivePrice()
+}
+
+document.getElementById('guestMinus')?.addEventListener('click', () => setGuests(guests - 1))
+document.getElementById('guestPlus')?.addEventListener('click',  () => setGuests(guests + 1))
+
+// ===== LIVE PRICE =====
+function updateLivePrice() {
+  const vehicleEl = document.querySelector('input[name="vehicle"]:checked')
+  const checkin   = document.getElementById('bk-checkin').value
+  const checkout  = document.getElementById('bk-checkout').value
+  const bar       = document.getElementById('livePriceBar')
+  if (!vehicleEl || !checkin || !checkout || new Date(checkout) <= new Date(checkin)) {
+    if (bar) bar.style.display = 'none'
+    return
+  }
+  const days  = daysBetween(checkin, checkout)
+  const rate  = VEHICLE_RATES[vehicleEl.value]
+  const total = Math.round(rate * days * 1.1)
+  const noteEl  = document.getElementById('livePriceNote')
+  const totalEl = document.getElementById('livePriceTotal')
+  if (noteEl)  noteEl.textContent  = `${VEHICLE_LABELS[vehicleEl.value]} · $${rate}/day · ${days} day${days > 1 ? 's' : ''}`
+  if (totalEl) totalEl.textContent = `$${total}`
+  if (bar) bar.style.display = 'flex'
+}
+
+document.querySelectorAll('input[name="vehicle"]').forEach(r =>
+  r.addEventListener('change', updateLivePrice)
+)
+
+// ===== FORM SUBMIT =====
+document.getElementById('bookingForm')?.addEventListener('submit', e => {
+  e.preventDefault()
+  const form      = e.target
+  const pickup    = form.pickup.value
+  const dest      = form.destination.value
+  const checkin   = form.checkin.value
+  const checkout  = form.checkout.value
+  const people    = form.people.value
+  const vehicleEl = form.querySelector('input[name="vehicle"]:checked')
+
+  if (!vehicleEl) { alert('Please select a vehicle type.'); return }
+
+  renderResults({ pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value })
+
+  const params = new URLSearchParams({ pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value })
+  history.replaceState(null, '', `?${params.toString()}`)
+})
+
+// ===== RENDER RESULTS =====
+function renderResults({ pickup, destination, people, checkin, checkout, vehicle }) {
   const days  = daysBetween(checkin, checkout)
   const rate  = VEHICLE_RATES[vehicle]
   const total = Math.round(rate * days * 1.1)
   const pkgs  = getRecommended(destination)
 
   const chips = [
-    { icon: 'location-outline',  text: destination },
-    { icon: 'people-outline',    text: `${people} ${people == 1 ? 'person' : 'people'}` },
-    { icon: 'calendar-outline',  text: `${fmtDate(checkin)} → ${fmtDate(checkout)}` },
-    { icon: VEHICLE_ICONS[vehicle], text: VEHICLE_LABELS[vehicle] },
-    { icon: 'moon-outline',      text: `${days} ${days === 1 ? 'night' : 'nights'}` }
+    { icon: 'radio-button-on-outline', text: pickup },
+    { icon: 'navigate-outline',        text: '→' },
+    { icon: 'location-outline',        text: destination },
+    { icon: 'people-outline',          text: `${people} guest${people == 1 ? '' : 's'}` },
+    { icon: 'calendar-outline',        text: `${fmtDate(checkin)} → ${fmtDate(checkout)}` },
+    { icon: VEHICLE_ICONS[vehicle],    text: VEHICLE_LABELS[vehicle] },
+    { icon: 'moon-outline',            text: `${days} night${days === 1 ? '' : 's'}` }
   ].map(c => `<span class="br-chip"><ion-icon name="${c.icon}"></ion-icon>${c.text}</span>`).join('')
 
   const pkgCards = pkgs.map(p => `
@@ -130,7 +291,7 @@ function buildResultsHTML({ destination, people, checkin, checkout, vehicle }) {
         <h3 class="br-pkg-title">${p.title}</h3>
         <p class="br-pkg-desc">${p.desc}</p>
         <div class="br-pkg-footer">
-          <div class="br-pkg-rating">${starHTML()}<span>(verified)</span></div>
+          <div class="br-pkg-rating">${stars()}<span>(verified)</span></div>
           <div class="br-pkg-price">
             <p class="br-price-value">$${p.price}</p>
             <p class="br-price-note">/per person</p>
@@ -140,12 +301,19 @@ function buildResultsHTML({ destination, people, checkin, checkout, vehicle }) {
       </div>
     </div>`).join('')
 
-  return `
+  const html = `
     <div class="br-header">
       <div>
         <h2 class="br-title">Your Travel Matches</h2>
-        <p class="br-subtitle">Results for <strong>${destination}</strong> · ${people} guest${people == 1 ? '' : 's'}</p>
+        <p class="br-subtitle">
+          <strong>${pickup}</strong> → <strong>${destination}</strong>
+          &nbsp;·&nbsp; ${people} guest${people == 1 ? '' : 's'}
+          &nbsp;·&nbsp; ${days} night${days === 1 ? '' : 's'}
+        </p>
       </div>
+      <button class="br-modify-link" id="modifySearch">
+        <ion-icon name="create-outline"></ion-icon> Modify Search
+      </button>
     </div>
 
     <div class="br-chips">${chips}</div>
@@ -155,7 +323,7 @@ function buildResultsHTML({ destination, people, checkin, checkout, vehicle }) {
         <p class="br-estimate-label">Estimated Transport Cost</p>
         <p class="br-estimate-note">
           <ion-icon name="${VEHICLE_ICONS[vehicle]}"></ion-icon>
-          ${VEHICLE_LABELS[vehicle]} &nbsp;·&nbsp; $${rate}/day &nbsp;·&nbsp; ${days} day${days > 1 ? 's' : ''} + 10% tax
+          ${VEHICLE_LABELS[vehicle]} · $${rate}/day · ${days} day${days > 1 ? 's' : ''} + 10% tax
         </p>
       </div>
       <div class="br-estimate-right">
@@ -171,77 +339,53 @@ function buildResultsHTML({ destination, people, checkin, checkout, vehicle }) {
       <a href="packages.html" class="btn btn-primary">View All Packages</a>
       <a href="index.html#contact" class="btn btn-outline">Enquire Now</a>
     </div>`
-}
 
-function showResults(data) {
-  const section = document.getElementById('bookingResultsSection')
-  const inner   = document.getElementById('bookingResultsInner')
-  if (!section || !inner) return
-  inner.innerHTML = buildResultsHTML(data)
+  const section = document.getElementById('resultsSection')
+  const inner   = document.getElementById('resultsInner')
+  inner.innerHTML = html
   section.style.display = 'block'
+
+  // Stagger-animate cards
+  setTimeout(() => {
+    inner.querySelectorAll('.br-pkg-card').forEach((card, i) => {
+      setTimeout(() => card.classList.add('visible'), i * 150)
+    })
+  }, 50)
+
   section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  // Modify search button
+  document.getElementById('modifySearch')?.addEventListener('click', () => {
+    goToStep(1)
+    section.style.display = 'none'
+    document.querySelector('.bk-form-section').scrollIntoView({ behavior: 'smooth' })
+  })
 }
 
-// ===== PRE-FILL FROM URL PARAMS =====
-function prefillFromParams() {
-  const params  = new URLSearchParams(window.location.search)
-  const people  = params.get('people')
-  const checkin = params.get('checkin')
-  const checkout= params.get('checkout')
-  const vehicle = params.get('vehicle')
+// ===== PREFILL FROM URL PARAMS =====
+;(function init() {
+  const p = new URLSearchParams(window.location.search)
+  const pickup      = p.get('pickup')
+  const destination = p.get('destination')
+  const people      = p.get('people')
+  const checkin     = p.get('checkin')
+  const checkout    = p.get('checkout')
+  const vehicle     = p.get('vehicle')
 
-  if (people)  document.getElementById('bp-people').value  = people
-  if (checkin) document.getElementById('bp-checkin').value = checkin
-  if (checkout)document.getElementById('bp-checkout').value= checkout
+  if (pickup)      { const el = document.getElementById('bk-pickup');  if (el) el.value = pickup }
+  if (destination) { const el = document.getElementById('bk-dest');    if (el) el.value = destination }
+  if (checkin)     { const el = document.getElementById('bk-checkin'); if (el) el.value = checkin }
+  if (checkout)    { const el = document.getElementById('bk-checkout');if (el) el.value = checkout }
+  if (people)      setGuests(parseInt(people, 10))
   if (vehicle) {
-    const radio = document.querySelector(`input[name="vehicle"][value="${vehicle}"]`)
-    if (radio) radio.checked = true
-  }
-}
-
-// ===== FORM SUBMIT =====
-const bookingForm = document.getElementById('bookingForm')
-bookingForm?.addEventListener('submit', e => {
-  e.preventDefault()
-
-  const destination = bookingForm.destination.value
-  const people      = bookingForm.people.value
-  const checkin     = bookingForm.checkin.value
-  const checkout    = bookingForm.checkout.value
-  const vehicleEl   = bookingForm.querySelector('input[name="vehicle"]:checked')
-
-  if (!destination || !people || !checkin || !checkout || !vehicleEl) {
-    alert('Please fill in all fields and select a vehicle.')
-    return
-  }
-  if (new Date(checkout) <= new Date(checkin)) {
-    alert('Check-out date must be after check-in date.')
-    return
+    const r = document.querySelector(`input[name="vehicle"][value="${vehicle}"]`)
+    if (r) { r.checked = true; updateLivePrice() }
   }
 
-  showResults({ destination, people, checkin, checkout, vehicle: vehicleEl.value })
+  updateRoutePreview()
+  updateNights()
 
-  // Update URL without reload so results are shareable
-  const params = new URLSearchParams({ destination, people, checkin, checkout, vehicle: vehicleEl.value })
-  history.replaceState(null, '', `?${params.toString()}`)
-})
-
-// ===== INIT =====
-prefillFromParams()
-
-// If all required params are present in URL, auto-submit
-;(function autoSearch() {
-  const params      = new URLSearchParams(window.location.search)
-  const destination = params.get('destination')
-  const people      = params.get('people')
-  const checkin     = params.get('checkin')
-  const checkout    = params.get('checkout')
-  const vehicle     = params.get('vehicle')
-
-  if (destination && people && checkin && checkout && vehicle) {
-    // Also set destination select
-    const destSelect = document.getElementById('dest-select')
-    if (destSelect) destSelect.value = destination
-    showResults({ destination, people, checkin, checkout, vehicle })
+  if (pickup && destination && people && checkin && checkout && vehicle) {
+    renderResults({ pickup, destination, people, checkin, checkout, vehicle })
   }
 })()
