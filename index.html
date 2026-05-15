@@ -115,9 +115,6 @@
           </div>
         </div>
 
-        <!-- Three.js particles -->
-        <canvas id="heroCanvas" class="hero-canvas"></canvas>
-
         <!-- Left arrow -->
         <button class="hero-arrow hero-prev" aria-label="Previous slide">
           <ion-icon name="chevron-back-outline"></ion-icon>
@@ -132,7 +129,7 @@
           </p>
           <div class="btn-group">
             <button class="btn btn-primary">Explore Now</button>
-            <button class="btn btn-secondary">Book Your Trip</button>
+            <a href="booking.html" class="btn btn-secondary">Book Your Trip</a>
           </div>
         </div>
 
@@ -154,83 +151,6 @@
         <!-- Auto-play progress bar -->
         <div class="hero-progress"><div class="hero-progress-fill" id="heroProgressFill"></div></div>
 
-      </section>
-
-      <!-- TOUR SEARCH -->
-      <section class="tour-search">
-        <div class="container">
-          <form class="tour-search-form" id="tourSearchForm" novalidate>
-
-            <!-- Row 1: dropdowns + dates -->
-            <div class="tsf-grid">
-              <div class="input-wrapper">
-                <label for="dest-select" class="input-label">Destination</label>
-                <select id="dest-select" name="destination" class="input-field tsf-select" required>
-                  <option value="" disabled selected>Select Destination</option>
-                  <option>Colombo</option><option>Galle</option><option>Kandy</option>
-                  <option>Sigiriya</option><option>Ella</option><option>Nuwara Eliya</option>
-                  <option>Mirissa</option><option>Hikkaduwa</option><option>Bentota</option>
-                  <option>Arugam Bay</option><option>Jaffna</option><option>Trincomalee</option>
-                  <option>Yala</option><option>Pasikuda</option><option>Anuradhapura</option>
-                  <option>Polonnaruwa</option><option>Negombo</option><option>Tangalle</option>
-                </select>
-              </div>
-              <div class="input-wrapper">
-                <label for="people" class="input-label">Number of People</label>
-                <input type="number" name="people" id="people" min="1" max="20" required placeholder="e.g. 2" class="input-field">
-              </div>
-              <div class="input-wrapper">
-                <label for="checkin" class="input-label">Check-in Date</label>
-                <input type="date" name="checkin" id="checkin" required class="input-field">
-              </div>
-              <div class="input-wrapper">
-                <label for="checkout" class="input-label">Check-out Date</label>
-                <input type="date" name="checkout" id="checkout" required class="input-field">
-              </div>
-            </div>
-
-            <!-- Row 2: vehicle selector -->
-            <div class="tsf-vehicle-section">
-              <p class="input-label">Select Vehicle</p>
-              <div class="vehicle-grid">
-                <label class="vehicle-card">
-                  <input type="radio" name="vehicle" value="car">
-                  <div class="vehicle-inner">
-                    <ion-icon name="car-outline" class="v-icon"></ion-icon>
-                    <strong>Car</strong>
-                    <em>Up to 4 pax</em>
-                  </div>
-                </label>
-                <label class="vehicle-card">
-                  <input type="radio" name="vehicle" value="van">
-                  <div class="vehicle-inner">
-                    <ion-icon name="bus-outline" class="v-icon"></ion-icon>
-                    <strong>Van</strong>
-                    <em>Up to 8 pax</em>
-                  </div>
-                </label>
-                <label class="vehicle-card">
-                  <input type="radio" name="vehicle" value="tuk">
-                  <div class="vehicle-inner">
-                    <ion-icon name="flash-outline" class="v-icon"></ion-icon>
-                    <strong>Tuk-Tuk</strong>
-                    <em>Up to 3 pax</em>
-                  </div>
-                </label>
-                <label class="vehicle-card">
-                  <input type="radio" name="vehicle" value="bike">
-                  <div class="vehicle-inner">
-                    <ion-icon name="bicycle-outline" class="v-icon"></ion-icon>
-                    <strong>Bike</strong>
-                    <em>Up to 2 pax</em>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-secondary tsf-submit-btn">Search Now</button>
-          </form>
-        </div>
       </section>
 
       <!-- POPULAR DESTINATIONS -->
@@ -490,20 +410,6 @@
 
     </article>
   </main>
-
-  <!-- SEARCH RESULTS MODAL -->
-  <div class="search-modal-overlay" id="searchModalOverlay">
-    <div class="search-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="search-modal-header">
-        <div>
-          <h3 id="modalTitle">Your Travel Matches</h3>
-          <p id="modalSubtitle">Based on your search preferences</p>
-        </div>
-        <button class="modal-close-btn" id="searchModalClose" aria-label="Close">&times;</button>
-      </div>
-      <div class="search-modal-body" id="searchModalBody"></div>
-    </div>
-  </div>
 
   <!-- FOOTER -->
   <footer class="footer">

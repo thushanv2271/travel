@@ -22,98 +22,6 @@ function initPreloader() {
   }, 4000)
 }
 
-// ===== THREE.JS HERO PARTICLES =====
-function initHeroParticles() {
-  const canvas = document.getElementById('heroCanvas')
-  if (!canvas) return
-
-  const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100)
-  camera.position.z = 4
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-  // Circular soft-glow sprite — fixes the default WebGL square particle look
-  function makeSprite() {
-    const c = document.createElement('canvas')
-    c.width = c.height = 64
-    const ctx = c.getContext('2d')
-    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
-    g.addColorStop(0,   'rgba(255,255,255,1)')
-    g.addColorStop(0.4, 'rgba(255,255,255,0.6)')
-    g.addColorStop(1,   'rgba(255,255,255,0)')
-    ctx.fillStyle = g
-    ctx.fillRect(0, 0, 64, 64)
-    return new THREE.CanvasTexture(c)
-  }
-  const sprite = makeSprite()
-
-  function makePoints(count, spread, color, size, opacity) {
-    const pos = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      pos[i * 3]     = (Math.random() - 0.5) * spread[0]
-      pos[i * 3 + 1] = (Math.random() - 0.5) * spread[1]
-      pos[i * 3 + 2] = (Math.random() - 0.5) * spread[2]
-    }
-    const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-    const mat = new THREE.PointsMaterial({
-      color, size, transparent: true, opacity,
-      sizeAttenuation: true, depthWrite: false,
-      map: sprite, alphaTest: 0.001
-    })
-    return new THREE.Points(geo, mat)
-  }
-
-  const pts1 = makePoints(180, [14, 10, 6], 0xffd700, 0.10, 0.80)  // gold
-  const pts2 = makePoints(380, [18, 13, 9], 0xffffff, 0.04, 0.50)  // white dust
-  const pts3 = makePoints(90,  [12, 8,  5], 0x4fc3f7, 0.08, 0.60)  // teal
-  scene.add(pts1, pts2, pts3)
-
-  let targetX = 0, targetY = 0, curX = 0, curY = 0
-
-  window.addEventListener('mousemove', e => {
-    targetX = (e.clientX / window.innerWidth  - 0.5) * 2
-    targetY = (e.clientY / window.innerHeight - 0.5) * 2
-  })
-  window.addEventListener('touchmove', e => {
-    const t = e.touches[0]
-    targetX = (t.clientX / window.innerWidth  - 0.5) * 2
-    targetY = (t.clientY / window.innerHeight - 0.5) * 2
-  }, { passive: true })
-
-  function resize() {
-    const w = canvas.clientWidth, h = canvas.clientHeight
-    renderer.setSize(w, h, false)
-    camera.aspect = w / h
-    camera.updateProjectionMatrix()
-  }
-  resize()
-  window.addEventListener('resize', resize)
-
-  let t = 0
-  function tick() {
-    requestAnimationFrame(tick)
-    t++
-    curX += (targetX - curX) * 0.04
-    curY += (targetY - curY) * 0.04
-
-    pts1.rotation.y =  t * 0.00035 + curX * 0.12
-    pts1.rotation.x =  t * 0.00012 + curY * 0.06
-    pts2.rotation.y = -t * 0.00022 + curX * 0.09
-    pts2.rotation.x = -t * 0.00015 + curY * 0.04
-    pts3.rotation.y =  t * 0.00028 - curX * 0.07
-    pts3.rotation.x = -t * 0.00010 - curY * 0.05
-
-    camera.position.x += (curX  * 0.28 - camera.position.x) * 0.06
-    camera.position.y += (-curY * 0.20 - camera.position.y) * 0.06
-
-    renderer.render(scene, camera)
-  }
-  tick()
-}
-
 // ===== HERO BACKGROUND PARALLAX =====
 function initHeroParallax() {
   const slides = document.querySelectorAll('.hero-slide')
@@ -382,7 +290,6 @@ function initCounters() {
 // ===== INIT =====
 initPreloader()
 initHeroSlider()
-initHeroParticles()
 initHeroParallax()
 initScrollProgress()
 initScrollReveal()

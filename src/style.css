@@ -1,12 +1,13 @@
 :root {
-  --united-nations-blue: hsl(214, 56%, 58%);
-  --bright-navy-blue: hsl(214, 57%, 51%);
+  /* Sri Lanka "Wonder of Asia" logo palette */
+  --united-nations-blue: hsl(206, 60%, 56%);   /* logo blue — lighter tint */
+  --bright-navy-blue: hsl(206, 72%, 42%);       /* logo blue — primary */
   --spanish-gray: hsl(0, 0%, 60%);
   --black-coral: hsl(225, 8%, 42%);
-  --oxford-blue: hsl(208, 97%, 12%);
-  --yale-blue: hsl(214, 72%, 33%);
-  --blue-ncs: hsl(197, 100%, 36%);
-  --gunmetal: hsl(206, 34%, 20%);
+  --oxford-blue: hsl(206, 90%, 12%);            /* logo blue — very dark */
+  --yale-blue: hsl(206, 72%, 28%);              /* logo blue — hover/pressed */
+  --blue-ncs: hsl(192, 68%, 40%);               /* logo teal accent */
+  --gunmetal: hsl(206, 34%, 18%);
   --gainsboro: hsl(0, 0%, 88%);
   --cultured: hsl(0, 0%, 98%);
   --white: hsl(0, 0%, 100%);
@@ -80,7 +81,7 @@ body { background: var(--white); }
   text-transform: uppercase;
   font-family: var(--ff-montserrat);
   margin-bottom: 8px;
-  background: linear-gradient(90deg, var(--bright-navy-blue) 0%, hsl(204,82%,60%) 50%, var(--bright-navy-blue) 100%);
+  background: linear-gradient(90deg, var(--bright-navy-blue) 0%, var(--blue-ncs) 50%, var(--bright-navy-blue) 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -103,7 +104,7 @@ body { background: var(--white); }
   letter-spacing: -0.3px;
   white-space: nowrap;
 }
-.site-logo em { color: hsl(45, 65%, 65%); font-style: normal; }
+.site-logo em { color: hsl(28, 88%, 62%); font-style: normal; }
 .site-logo-dark { color: var(--gunmetal); }
 .site-logo-footer { font-size: 22px; display: inline-block; margin-bottom: 16px; }
 
@@ -359,7 +360,7 @@ header {
 .hero-progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--bright-navy-blue), hsl(46,100%,57%));
+  background: linear-gradient(90deg, var(--bright-navy-blue), var(--blue-ncs));
   transition: width 0.1s linear;
 }
 .hero-canvas {
@@ -588,7 +589,7 @@ header {
 .footer-form .btn { width: 100%; }
 
 .footer-bottom {
-  background: hsl(205, 36%, 17%);
+  background: hsl(206, 38%, 14%);
   padding-block: 20px;
   text-align: center;
 }
@@ -777,7 +778,7 @@ header {
   font-size: var(--fs-5);
 }
 .breadcrumb a { color: var(--white); }
-.breadcrumb a:hover { color: hsl(45, 65%, 65%); }
+.breadcrumb a:hover { color: hsl(28, 88%, 65%); }
 
 /* ===== FILTER SECTION ===== */
 .filter-section {
@@ -934,7 +935,7 @@ header {
   background-position: right 16px center;
   cursor: pointer;
 }
-.tsf-select option { background: hsl(214,57%,35%); color: #fff; }
+.tsf-select option { background: hsl(206,72%,30%); color: #fff; }
 
 .tsf-vehicle-section { margin-bottom: 24px; }
 .tsf-vehicle-section > .input-label { margin-left: 0; margin-bottom: 12px; }
@@ -998,6 +999,7 @@ header {
 }
 @media (min-width: 992px) {
   .tsf-grid { grid-template-columns: repeat(4, 1fr); }
+  .tsf-grid--3 { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ===== SEARCH RESULTS MODAL ===== */
@@ -1071,7 +1073,7 @@ header {
   align-items: center;
   gap: 5px;
   padding: 5px 12px;
-  background: hsl(214,56%,94%);
+  background: hsl(206,72%,94%);
   color: var(--bright-navy-blue);
   border-radius: 100px;
   font-size: var(--fs-7);
@@ -1123,7 +1125,7 @@ header {
   transition: border-color .2s, box-shadow .2s;
   text-decoration: none;
 }
-.modal-pkg-card:hover { border-color: var(--bright-navy-blue); box-shadow: 0 4px 16px hsla(214,57%,51%,.12); }
+.modal-pkg-card:hover { border-color: var(--bright-navy-blue); box-shadow: 0 4px 16px hsla(206,72%,42%,.12); }
 
 .modal-pkg-img { width: 80px; height: 64px; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
 .modal-pkg-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -1191,7 +1193,7 @@ header {
   margin-bottom: 32px;
   animation: preloaderFloat 1.8s ease-in-out infinite;
 }
-.preloader-logo em { color: hsl(46, 100%, 57%); font-style: normal; }
+.preloader-logo em { color: hsl(28, 88%, 62%); font-style: normal; }
 
 .preloader-bar {
   width: 220px;
@@ -1204,7 +1206,7 @@ header {
 .preloader-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, hsl(46,100%,57%), #fff, hsl(46,100%,57%));
+  background: linear-gradient(90deg, hsl(28,88%,62%), #fff, hsl(28,88%,62%));
   background-size: 200% auto;
   border-radius: 10px;
   animation: preloaderLoad 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards,
@@ -1225,7 +1227,7 @@ header {
   top: 0; left: 0;
   height: 3px;
   width: 0%;
-  background: linear-gradient(90deg, var(--bright-navy-blue), hsl(46,100%,57%));
+  background: linear-gradient(90deg, var(--bright-navy-blue), var(--blue-ncs));
   z-index: 10000;
   transition: width 0.1s linear;
 }
