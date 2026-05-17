@@ -1,5 +1,9 @@
 import { initCurrency, convert, format } from './currency.js'
+import { initSearch }                    from './search.js'
+import { initUserNav }                   from './user-auth.js'
 initCurrency()
+initSearch()
+initUserNav()
 document.addEventListener('currencyChanged', () => {
   updateLivePrice()
   updateHotelPrice()

@@ -1,6 +1,6 @@
-# Truly Sri Lanka — React Native App
+# Tapro Travels — React Native App
 
-Expo-based mobile app mirroring the web version of the Truly Sri Lanka travel platform.
+Expo-based mobile app mirroring the web version of the Tapro Travels travel platform.
 
 ## Quick Start
 

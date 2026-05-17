@@ -158,7 +158,7 @@ export default function HomeScreen() {
               <Ionicons name="logo-youtube" size={20} color={colors.bodyText} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.copyright}>© 2026 Truly Sri Lanka. All rights reserved.</Text>
+          <Text style={styles.copyright}>© 2026 Tapro Travels. All rights reserved.</Text>
         </View>
       </ScrollView>
     </View>

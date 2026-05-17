@@ -9,6 +9,7 @@ export default defineConfig({
         booking:      resolve(__dirname, 'booking.html'),
         packages:     resolve(__dirname, 'packages.html'),
         destinations: resolve(__dirname, 'destinations.html'),
+        admin:        resolve(__dirname, 'admin.html'),
       }
     }
   }

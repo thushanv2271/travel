@@ -1,3 +1,11 @@
+# .NET secrets & build artifacts
+backend/appsettings.Development.json
+backend/appsettings.*.json
+backend/bin/
+backend/obj/
+backend/.vs/
+backend/*.user
+
 # Logs
 logs
 *.log
@@ -11,6 +19,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.vite/
 
 # Editor directories and files
 .vscode/*
