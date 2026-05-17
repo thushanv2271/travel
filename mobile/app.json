@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Truly Sri Lanka",
+    "slug": "truly-sri-lanka",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.trulysrilanka.app"
+    },
+    "android": {
+      "package": "com.trulysrilanka.app"
+    }
+  }
+}

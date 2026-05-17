@@ -1,3 +1,6 @@
+import { initCurrency } from './currency.js'
+initCurrency()
+
 // Navbar toggle
 const overlay = document.querySelector('[data-overlay]')
 const navOpenBtn = document.querySelector('[data-nav-open-btn]')

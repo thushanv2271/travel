@@ -158,6 +158,38 @@ header {
 .search-btn, .nav-open-btn { font-size: 30px; color: inherit; }
 .search-btn { font-size: 20px; }
 
+.currency-switcher { display: flex; align-items: center; }
+.currency-select {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.35);
+  color: var(--white);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--ff-poppins);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 76px;
+  text-align: center;
+}
+.currency-select:hover,
+.currency-select:focus {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.6);
+}
+.currency-select option {
+  color: var(--gunmetal);
+  background: var(--white);
+  font-weight: 500;
+}
+.header.active .currency-select {
+  border-color: rgba(255,255,255,0.25);
+}
+
 .header-bottom { border-bottom: 1px solid hsla(0, 0%, 100%, .1); }
 .header-bottom .container {
   display: flex;
@@ -1298,3 +1330,80 @@ header {
   will-change: transform;
 }
 .pkg-item:hover { transform: translateY(-8px); box-shadow: 0 18px 36px rgba(0,0,0,0.13); }
+
+/* ===== NEW PACKAGE CARDS — BADGE + ITINERARY ===== */
+
+.card-badge {
+  display: inline-block;
+  background: var(--bright-navy-blue);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: var(--fw-700);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+}
+
+.card-itinerary {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gainsboro);
+}
+
+.itinerary-label {
+  font-family: var(--ff-montserrat);
+  font-size: var(--fs-7);
+  font-weight: var(--fw-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--bright-navy-blue);
+  margin-bottom: 10px;
+}
+
+.itinerary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.itinerary-list li {
+  font-size: var(--fs-7);
+  color: var(--black-coral);
+  padding-left: 4px;
+  line-height: 1.5;
+}
+
+.itinerary-list li span {
+  display: inline-block;
+  background: hsl(206, 72%, 94%);
+  color: var(--bright-navy-blue);
+  font-weight: var(--fw-700);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.card-includes,
+.card-addons {
+  margin-bottom: 8px;
+}
+
+.includes-title {
+  font-size: var(--fs-8);
+  font-weight: var(--fw-700);
+  color: var(--gunmetal);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 3px;
+}
+
+.includes-text {
+  font-size: var(--fs-8);
+  color: var(--black-coral);
+  line-height: 1.6;
+}

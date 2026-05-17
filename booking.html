@@ -23,13 +23,26 @@
           <div class="icon-box"><ion-icon name="call-outline"></ion-icon></div>
           <div class="wrapper">
             <p class="helpline-title">For Further Inquiries:</p>
-            <p class="helpline-number">+94 11 234 5678</p>
+            <p class="helpline-number">+94  72 280 0251</p>
           </div>
         </a>
         <a href="index.html" class="logo-link">
           <span class="site-logo">Truly <em>Sri Lanka</em></span>
         </a>
         <div class="header-btn-group">
+          <div class="currency-switcher">
+            <select class="currency-select" aria-label="Select currency">
+              <option value="USD">$ USD</option>
+              <option value="LKR">Rs LKR</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+              <option value="AUD">A$ AUD</option>
+              <option value="CAD">C$ CAD</option>
+              <option value="SGD">S$ SGD</option>
+              <option value="JPY">¥ JPY</option>
+              <option value="INR">₹ INR</option>
+            </select>
+          </div>
           <button class="search-btn" aria-label="Search"><ion-icon name="search"></ion-icon></button>
           <button class="nav-open-btn" aria-label="Open Menu" data-nav-open-btn><ion-icon name="menu-outline"></ion-icon></button>
         </div>
@@ -93,6 +106,11 @@
             <div class="bk-step" data-step="3">
               <div class="bk-step-dot"><ion-icon name="car-outline"></ion-icon></div>
               <span>Vehicle</span>
+            </div>
+            <div class="bk-step-line"></div>
+            <div class="bk-step" data-step="4">
+              <div class="bk-step-dot"><ion-icon name="bed-outline"></ion-icon></div>
+              <span>Hotel</span>
             </div>
           </div>
 
@@ -352,6 +370,112 @@
                 <button type="button" class="bk-btn-back" id="step3Back">
                   <ion-icon name="arrow-back-outline"></ion-icon> Back
                 </button>
+                <button type="button" class="bk-btn-next" id="step3Next">
+                  Next: Hotel <ion-icon name="arrow-forward-outline"></ion-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- ── STEP 4: Hotel ── -->
+            <div class="bk-step-panel" id="panel-4">
+              <h2 class="bk-panel-title">What type of hotel do you prefer?</h2>
+              <p class="bk-panel-sub">Choose your accommodation standard — we'll match packages and estimate costs accordingly.</p>
+
+              <div class="bk-hotel-grid">
+
+                <label class="bk-hotel-card" data-hotel="guesthouse">
+                  <input type="radio" name="hotel" value="guesthouse">
+                  <div class="bk-hotel-inner">
+                    <div class="bk-hotel-stars">
+                      <ion-icon name="home-outline"></ion-icon>
+                    </div>
+                    <div class="bk-hotel-info">
+                      <strong>Guesthouse / Homestay</strong>
+                      <em>Local, authentic experience</em>
+                      <span class="bk-hotel-rate">~$20 / person / night</span>
+                    </div>
+                    <div class="bk-hotel-check"><ion-icon name="checkmark-circle"></ion-icon></div>
+                  </div>
+                </label>
+
+                <label class="bk-hotel-card" data-hotel="3star">
+                  <input type="radio" name="hotel" value="3star">
+                  <div class="bk-hotel-inner">
+                    <div class="bk-hotel-stars">
+                      <ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon>
+                    </div>
+                    <div class="bk-hotel-info">
+                      <strong>3 Star Hotel</strong>
+                      <em>Comfortable, good value</em>
+                      <span class="bk-hotel-rate">~$40 / person / night</span>
+                    </div>
+                    <div class="bk-hotel-check"><ion-icon name="checkmark-circle"></ion-icon></div>
+                  </div>
+                </label>
+
+                <label class="bk-hotel-card" data-hotel="4star">
+                  <input type="radio" name="hotel" value="4star">
+                  <div class="bk-hotel-inner">
+                    <div class="bk-hotel-stars">
+                      <ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon>
+                    </div>
+                    <div class="bk-hotel-info">
+                      <strong>4 Star Hotel</strong>
+                      <em>Superior comfort & amenities</em>
+                      <span class="bk-hotel-rate">~$80 / person / night</span>
+                    </div>
+                    <div class="bk-hotel-check"><ion-icon name="checkmark-circle"></ion-icon></div>
+                  </div>
+                </label>
+
+                <label class="bk-hotel-card" data-hotel="5star">
+                  <input type="radio" name="hotel" value="5star">
+                  <div class="bk-hotel-inner">
+                    <div class="bk-hotel-stars">
+                      <ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon><ion-icon name="star"></ion-icon>
+                    </div>
+                    <div class="bk-hotel-info">
+                      <strong>5 Star Hotel</strong>
+                      <em>Luxury stay, premium service</em>
+                      <span class="bk-hotel-rate">~$150 / person / night</span>
+                    </div>
+                    <div class="bk-hotel-check"><ion-icon name="checkmark-circle"></ion-icon></div>
+                  </div>
+                </label>
+
+                <label class="bk-hotel-card bk-hotel-card--none" data-hotel="none">
+                  <input type="radio" name="hotel" value="none">
+                  <div class="bk-hotel-inner">
+                    <div class="bk-hotel-stars">
+                      <ion-icon name="car-outline"></ion-icon>
+                    </div>
+                    <div class="bk-hotel-info">
+                      <strong>No Accommodation</strong>
+                      <em>Transport only, I'll arrange my own</em>
+                      <span class="bk-hotel-rate">Transport cost only</span>
+                    </div>
+                    <div class="bk-hotel-check"><ion-icon name="checkmark-circle"></ion-icon></div>
+                  </div>
+                </label>
+
+              </div>
+
+              <!-- Hotel cost estimate bar -->
+              <div class="bk-price-bar bk-hotel-bar" id="hotelPriceBar" style="display:none">
+                <div class="bk-price-bar-left">
+                  <p class="bk-price-bar-label">Estimated Accommodation Cost</p>
+                  <p class="bk-price-bar-note" id="hotelPriceNote">—</p>
+                </div>
+                <div class="bk-price-bar-right">
+                  <p class="bk-price-bar-total" id="hotelPriceTotal">$0</p>
+                  <p class="bk-price-bar-tax">excl. taxes</p>
+                </div>
+              </div>
+
+              <div class="bk-step-nav">
+                <button type="button" class="bk-btn-back" id="step4Back">
+                  <ion-icon name="arrow-back-outline"></ion-icon> Back
+                </button>
                 <button type="submit" class="bk-btn-search" id="searchBtn">
                   <ion-icon name="search-outline"></ion-icon>
                   Search Packages
@@ -387,9 +511,9 @@
           <h4 class="contact-title">Contact Us</h4>
           <p class="contact-text">We'd love to help plan your Sri Lanka adventure!</p>
           <ul>
-            <li class="contact-item"><ion-icon name="call-outline"></ion-icon><a href="tel:+94112345678" class="contact-link">+94 11 234 5678</a></li>
+            <li class="contact-item"><ion-icon name="call-outline"></ion-icon><a href="tel:+94112345678" class="contact-link">+94  72 280 0251</a></li>
             <li class="contact-item"><ion-icon name="mail-outline"></ion-icon><a href="mailto:info@trulysrilanka.com" class="contact-link">info@trulysrilanka.com</a></li>
-            <li class="contact-item"><ion-icon name="location-outline"></ion-icon><address>No. 42, Galle Road, Colombo 03, Sri Lanka</address></li>
+            <li class="contact-item"><ion-icon name="location-outline"></ion-icon><address>No. 76, Galle Road, Colombo 03, Sri Lanka</address></li>
           </ul>
         </div>
         <div class="footer-form">

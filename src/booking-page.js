@@ -1,3 +1,11 @@
+import { initCurrency, convert, format } from './currency.js'
+initCurrency()
+document.addEventListener('currencyChanged', () => {
+  updateLivePrice()
+  updateHotelPrice()
+  if (lastResults) renderResults(lastResults)
+})
+
 // ===== NAVBAR TOGGLE =====
 const overlay     = document.querySelector('[data-overlay]')
 const navOpenBtn  = document.querySelector('[data-nav-open-btn]')
@@ -27,6 +35,22 @@ window.addEventListener('scroll', () => {
 const VEHICLE_RATES  = { car: 45, van: 65, tuk: 25, bike: 20 }
 const VEHICLE_LABELS = { car: 'Car', van: 'Van', tuk: 'Tuk-Tuk', bike: 'Bike' }
 const VEHICLE_ICONS  = { car: 'car-sport-outline', van: 'bus-outline', tuk: 'flash-outline', bike: 'bicycle-outline' }
+
+const HOTEL_RATES  = { guesthouse: 20, '3star': 40, '4star': 80, '5star': 150, none: 0 }
+const HOTEL_LABELS = {
+  guesthouse: 'Guesthouse / Homestay',
+  '3star': '3 Star Hotel',
+  '4star': '4 Star Hotel',
+  '5star': '5 Star Hotel',
+  none: 'No Accommodation'
+}
+const HOTEL_STARS = {
+  guesthouse: '🏠',
+  '3star': '★★★',
+  '4star': '★★★★',
+  '5star': '★★★★★',
+  none: '🚗'
+}
 
 const PACKAGES = [
   {
@@ -79,6 +103,8 @@ const PACKAGES = [
     tags: []
   }
 ]
+
+let lastResults = null
 
 // ===== HELPERS =====
 function getRecommended(destination) {
@@ -139,6 +165,12 @@ document.getElementById('step2Next')?.addEventListener('click', () => {
 })
 
 document.getElementById('step3Back')?.addEventListener('click', () => goToStep(2))
+document.getElementById('step3Next')?.addEventListener('click', () => {
+  const vehicleEl = document.querySelector('input[name="vehicle"]:checked')
+  if (!vehicleEl) { alert('Please select a vehicle type.'); return }
+  goToStep(4)
+})
+document.getElementById('step4Back')?.addEventListener('click', () => goToStep(3))
 
 function flashInvalid(id, msg) {
   const el = document.getElementById(id)
@@ -232,14 +264,46 @@ function updateLivePrice() {
   const total = Math.round(rate * days * 1.1)
   const noteEl  = document.getElementById('livePriceNote')
   const totalEl = document.getElementById('livePriceTotal')
-  if (noteEl)  noteEl.textContent  = `${VEHICLE_LABELS[vehicleEl.value]} · $${rate}/day · ${days} day${days > 1 ? 's' : ''}`
-  if (totalEl) totalEl.textContent = `$${total}`
+  if (noteEl)  noteEl.textContent  = `${VEHICLE_LABELS[vehicleEl.value]} · ${format(convert(rate))}/day · ${days} day${days > 1 ? 's' : ''}`
+  if (totalEl) totalEl.textContent = format(convert(total))
   if (bar) bar.style.display = 'flex'
 }
 
 document.querySelectorAll('input[name="vehicle"]').forEach(r =>
   r.addEventListener('change', updateLivePrice)
 )
+
+// ===== HOTEL LIVE PRICE =====
+function updateHotelPrice() {
+  const hotelEl  = document.querySelector('input[name="hotel"]:checked')
+  const checkin  = document.getElementById('bk-checkin').value
+  const checkout = document.getElementById('bk-checkout').value
+  const bar      = document.getElementById('hotelPriceBar')
+  if (!hotelEl || !checkin || !checkout || new Date(checkout) <= new Date(checkin)) {
+    if (bar) bar.style.display = 'none'
+    return
+  }
+  if (hotelEl.value === 'none') {
+    if (bar) bar.style.display = 'none'
+    return
+  }
+  const days       = daysBetween(checkin, checkout)
+  const ratePerPax = HOTEL_RATES[hotelEl.value]
+  const total      = ratePerPax * days * guests
+  const noteEl     = document.getElementById('hotelPriceNote')
+  const totalEl    = document.getElementById('hotelPriceTotal')
+  if (noteEl)  noteEl.textContent  = `${HOTEL_LABELS[hotelEl.value]} · ${format(convert(ratePerPax))}/person/night · ${days} night${days > 1 ? 's' : ''} · ${guests} guest${guests > 1 ? 's' : ''}`
+  if (totalEl) totalEl.textContent = format(convert(total))
+  if (bar) bar.style.display = 'flex'
+}
+
+document.querySelectorAll('input[name="hotel"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.querySelectorAll('.bk-hotel-card').forEach(c => c.classList.remove('selected'))
+    r.closest('.bk-hotel-card')?.classList.add('selected')
+    updateHotelPrice()
+  })
+})
 
 // ===== FORM SUBMIT =====
 document.getElementById('bookingForm')?.addEventListener('submit', e => {
@@ -251,21 +315,27 @@ document.getElementById('bookingForm')?.addEventListener('submit', e => {
   const checkout  = form.checkout.value
   const people    = form.people.value
   const vehicleEl = form.querySelector('input[name="vehicle"]:checked')
+  const hotelEl   = form.querySelector('input[name="hotel"]:checked')
 
   if (!vehicleEl) { alert('Please select a vehicle type.'); return }
+  if (!hotelEl)   { alert('Please select a hotel type.');   return }
 
-  renderResults({ pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value })
+  lastResults = { pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value, hotel: hotelEl.value }
+  renderResults(lastResults)
 
-  const params = new URLSearchParams({ pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value })
+  const params = new URLSearchParams({ pickup, destination: dest, people, checkin, checkout, vehicle: vehicleEl.value, hotel: hotelEl.value })
   history.replaceState(null, '', `?${params.toString()}`)
 })
 
 // ===== RENDER RESULTS =====
-function renderResults({ pickup, destination, people, checkin, checkout, vehicle }) {
-  const days  = daysBetween(checkin, checkout)
-  const rate  = VEHICLE_RATES[vehicle]
-  const total = Math.round(rate * days * 1.1)
-  const pkgs  = getRecommended(destination)
+function renderResults({ pickup, destination, people, checkin, checkout, vehicle, hotel = 'none' }) {
+  const days        = daysBetween(checkin, checkout)
+  const rate        = VEHICLE_RATES[vehicle]
+  const transTotal  = Math.round(rate * days * 1.1)
+  const hotelRate   = HOTEL_RATES[hotel] || 0
+  const hotelTotal  = hotelRate * days * parseInt(people, 10)
+  const grandTotal  = transTotal + hotelTotal
+  const pkgs        = getRecommended(destination)
 
   const chips = [
     { icon: 'radio-button-on-outline', text: pickup },
@@ -274,7 +344,8 @@ function renderResults({ pickup, destination, people, checkin, checkout, vehicle
     { icon: 'people-outline',          text: `${people} guest${people == 1 ? '' : 's'}` },
     { icon: 'calendar-outline',        text: `${fmtDate(checkin)} → ${fmtDate(checkout)}` },
     { icon: VEHICLE_ICONS[vehicle],    text: VEHICLE_LABELS[vehicle] },
-    { icon: 'moon-outline',            text: `${days} night${days === 1 ? '' : 's'}` }
+    { icon: 'moon-outline',            text: `${days} night${days === 1 ? '' : 's'}` },
+    { icon: 'bed-outline',             text: HOTEL_LABELS[hotel] || 'No Accommodation' }
   ].map(c => `<span class="br-chip"><ion-icon name="${c.icon}"></ion-icon>${c.text}</span>`).join('')
 
   const pkgCards = pkgs.map(p => `
@@ -293,7 +364,7 @@ function renderResults({ pickup, destination, people, checkin, checkout, vehicle
         <div class="br-pkg-footer">
           <div class="br-pkg-rating">${stars()}<span>(verified)</span></div>
           <div class="br-pkg-price">
-            <p class="br-price-value">$${p.price}</p>
+            <p class="br-price-value">${format(convert(p.price))}</p>
             <p class="br-price-note">/per person</p>
           </div>
           <a href="packages.html" class="btn btn-primary">Book Now</a>
@@ -319,16 +390,53 @@ function renderResults({ pickup, destination, people, checkin, checkout, vehicle
     <div class="br-chips">${chips}</div>
 
     <div class="br-estimate-card">
-      <div class="br-estimate-left">
-        <p class="br-estimate-label">Estimated Transport Cost</p>
-        <p class="br-estimate-note">
-          <ion-icon name="${VEHICLE_ICONS[vehicle]}"></ion-icon>
-          ${VEHICLE_LABELS[vehicle]} · $${rate}/day · ${days} day${days > 1 ? 's' : ''} + 10% tax
-        </p>
-      </div>
-      <div class="br-estimate-right">
-        <p class="br-estimate-total">$${total}</p>
-        <p class="br-estimate-note">excl. accommodation</p>
+      <div class="br-estimate-rows">
+        <div class="br-estimate-row">
+          <div class="br-estimate-left">
+            <p class="br-estimate-label">Transport Cost</p>
+            <p class="br-estimate-note">
+              <ion-icon name="${VEHICLE_ICONS[vehicle]}"></ion-icon>
+              ${VEHICLE_LABELS[vehicle]} · ${format(convert(rate))}/day · ${days} day${days > 1 ? 's' : ''} + 10% tax
+            </p>
+          </div>
+          <div class="br-estimate-right">
+            <p class="br-estimate-total">${format(convert(transTotal))}</p>
+          </div>
+        </div>
+        ${hotel !== 'none' ? `
+        <div class="br-estimate-divider"></div>
+        <div class="br-estimate-row">
+          <div class="br-estimate-left">
+            <p class="br-estimate-label">Accommodation Cost</p>
+            <p class="br-estimate-note">
+              <ion-icon name="bed-outline"></ion-icon>
+              ${HOTEL_STARS[hotel]} ${HOTEL_LABELS[hotel]} · ${format(convert(hotelRate))}/person/night · ${days} night${days > 1 ? 's' : ''} · ${people} guest${people == 1 ? '' : 's'}
+            </p>
+          </div>
+          <div class="br-estimate-right">
+            <p class="br-estimate-total">${format(convert(hotelTotal))}</p>
+          </div>
+        </div>
+        <div class="br-estimate-divider"></div>
+        <div class="br-estimate-row br-estimate-grand">
+          <div class="br-estimate-left">
+            <p class="br-estimate-label">Estimated Grand Total</p>
+            <p class="br-estimate-note">Transport + Accommodation (excl. meals & entrance fees)</p>
+          </div>
+          <div class="br-estimate-right">
+            <p class="br-estimate-total br-grand-total">${format(convert(grandTotal))}</p>
+          </div>
+        </div>` : `
+        <div class="br-estimate-divider"></div>
+        <div class="br-estimate-row">
+          <div class="br-estimate-left">
+            <p class="br-estimate-label">Accommodation</p>
+            <p class="br-estimate-note"><ion-icon name="car-outline"></ion-icon> Transport only — own accommodation</p>
+          </div>
+          <div class="br-estimate-right">
+            <p class="br-estimate-total">—</p>
+          </div>
+        </div>`}
       </div>
     </div>
 
@@ -385,7 +493,13 @@ function renderResults({ pickup, destination, people, checkin, checkout, vehicle
   updateRoutePreview()
   updateNights()
 
+  const hotel = p.get('hotel')
+  if (hotel) {
+    const r = document.querySelector(`input[name="hotel"][value="${hotel}"]`)
+    if (r) { r.checked = true; r.closest('.bk-hotel-card')?.classList.add('selected'); updateHotelPrice() }
+  }
+
   if (pickup && destination && people && checkin && checkout && vehicle) {
-    renderResults({ pickup, destination, people, checkin, checkout, vehicle })
+    renderResults({ pickup, destination, people, checkin, checkout, vehicle, hotel: hotel || 'none' })
   }
 })()
